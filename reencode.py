@@ -4,17 +4,18 @@ from xml.dom.minidom import parseString
 from stats import *
 from subprocess import Popen, PIPE
 from optparse import OptionParser
+import re
 
 parser = OptionParser()
 parser.add_option("--chapter", dest="byChapter", default=False, action="store_true")
 (opts, folders) = parser.parse_args()
 
-def reencode(root):
+def lsdvd(root):
 	cmd = "lsdvd -Ox -x '%s'"%root
 	p = Popen(cmd, shell=True, stdout = PIPE)
 	data = p.stdout.read()
 	if len(data) == 0:
-		return
+		raise Exception
 	data = unicode(data, errors="ignore")
 	data = data.replace("&", "&amp;")
 	open("dump", "wb").write(data)
@@ -63,6 +64,48 @@ def reencode(root):
 			else:
 				#print "node", child.nodeName
 				pass
+
+	return tracks
+
+def handbrakeList(root, fname):
+	titlePattern = re.compile("\+ title (\d+):")
+	durationPattern = re.compile("\+ duration: (\d+):(\d+):(\d+)")
+	chapterPattern = re.compile("\+ (\d+): cells \d+->\d+, \d+ blocks, duration (\d+):(\d+):(\d+)")
+
+	tracks = {}
+	for line in open(fname).readlines():
+		value = int(line)
+		cmd = "HandBrakeCLI --scan -i %s --title %d"%(root, value)
+		p = Popen(cmd, shell=True, stdout = PIPE, stderr = PIPE)
+		data = p.stderr.read()
+		data = unicode(data, errors="ignore")
+		open("dump", "wb").write(data)
+		title = titlePattern.search(data)
+		if title == None:
+			raise Exception
+		if int(title.groups()[0]) != value:
+			raise Exception, (title.groups(), value)
+		duration = durationPattern.search(data)
+		duration = [int(x) for x in duration.groups()]
+		duration = (duration[0]*60)+duration[1]+(duration[2]/60.0)
+		tracks[value] = {"length": duration}
+		chapters = {}
+		for chapter in chapterPattern.findall(data):
+			chapter = [int(x) for x in chapter]
+			chapters[int(chapter[0])] = (chapter[1]*60)+chapter[2]+(chapter[3]/60.0)
+		tracks[value]["chapters"] = chapters
+
+	return tracks
+	
+def reencode(root):
+	cmd = "./dvdid '%s'"%root
+	p = Popen(cmd, shell=True, stdout = PIPE)
+	data = p.stdout.read()
+	fname = data.replace("|", "_")
+	if exists(fname):
+		tracks = handbrakeList(root, fname)
+	else:
+		tracks = lsdvd(root)
 
 	print root
 	#print tracks
