@@ -77,7 +77,7 @@ def decide_files(fname):
 
 	episodeValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 30 and v["length"] < 84)
 	episodes = len(episodeValues)
-	movieValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 65 and k < 200)
+	movieValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 65 and v["length"] < 180)
 	movies = len(movieValues)
 	base = fname
 	print "e,m", episodes, movies, [(k,v["length"]) for (k,v) in tracks.iteritems()]
