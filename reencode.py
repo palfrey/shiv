@@ -50,20 +50,21 @@ def reencode(root):
 	items = list(decide_files(fname))
 	print items
 
-	for k, fname, tracks in items:
-		encode(root, k, fname, tracks)
+	for data in items:
+		encode(root, data)
 
-def encode(root, k, fname, info, chapter = None):
-	fname = fname.replace("/","")
-	cmd = "HandBrakeCLI -e x264 -q 19 -a 1 -E lame -B 128 -6 dpl2 -R Auto -D 0.0 -X 720 --loose-anamorphic -i \"%s\" --denoise weak --decomb -t %d -o \"%s\" --no-dvdnav"%(root, k, fname)
+def encode(root, data):
+	fname = data["fname"].replace("/","")
+	cmd = "HandBrakeCLI -e x264 -q 19 -a 1 -E lame -B 128 -6 dpl2 -R Auto -D 0.0 -X 720 --loose-anamorphic -i \"%s\" --denoise weak --decomb -t %d -o \"%s\" --no-dvdnav"%(root, data["number"], fname)
+	info = data["track"]
 	if "subp" in info and "audio" in info and "ja" in info["audio"]:
 		print "anime"
 		cmd += " -a %s -s %s"%(info["audio"]["ja"], info["subp"]["en"])
 	#elif "subp" in info and "en" in info["subp"]:
 	#	print "subtitles (foreign only)"
 	#	cmd += " --subtitle scan --subtitle-forced %s"%(info["subp"]["en"])
-	if chapter!=None:
-		cmd += " -c %d"%chapter
+	if "startChapter" in data:
+		cmd += " -c %d-%d"%(data["startChapter"], data["endChapter"])
 	print cmd
 	if not exists(fname):
 		#raise Exception, cmd

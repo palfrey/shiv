@@ -4,17 +4,21 @@ from xml.dom.minidom import parseString
 from sys import argv
 from json import dumps, loads
 from os import listdir
+import json
 
 def read_lsdvd(root, fname):
-	cmd = ["lsdvd", "-Ox", "-x", root]
-	print cmd
-	print fname
-	data = subprocess.check_output(cmd)
-	if len(data) == 0:
-		raise Exception
-	data = unicode(data, errors="ignore")
-	data = data.replace("&", "&amp;")
-	open(fname, "wb").write(data)
+	print "lsdvd data:", fname
+	if exists(fname):
+		data = open(fname).read()
+	else:
+		cmd = ["lsdvd", "-Ox", "-x", root]
+		print cmd
+		data = subprocess.check_output(cmd)
+		if len(data) == 0:
+			raise Exception
+		data = unicode(data, errors="ignore")
+		data = data.replace("&", "&amp;")
+		open(fname, "wb").write(data)
 	return data
 
 def parse_lsdvd(data):
@@ -32,7 +36,7 @@ def parse_lsdvd(data):
 			elif child.nodeName == u"length":
 				assert id != None
 				length = float(child.firstChild.data)
-				tracks[id] = {"length": length/60.0}
+				tracks[id] = {"length": length/60.0, "id": id}
 			elif child.nodeName == "subp":
 				assert tracks.has_key(id)
 				element = child.getElementsByTagName("langcode")[0]
@@ -71,25 +75,26 @@ def parse_lsdvd(data):
 def decide_files(fname):
 	tracks,order = parse_lsdvd(open(fname).read())
 
-	#print tracks
 	if tracks == {}:
 		raise Exception, "empty tracks"
+
+	base = fname
+
+	if exists(fname + ".trackmap"):
+		trackmap = json.loads(open(fname + ".trackmap").read())
+		print trackmap
+		for k, entry in enumerate(trackmap):
+			fname = "%s-%d-t%d-s%d-e%d.mkv"%(base, k, entry["track"], entry["startChapter"], entry["endChapter"])
+			yield {"number":k, "fname":fname, "track": tracks[entry["track"]], "startChapter":entry["startChapter"], "endChapter":entry["endChapter"]}
+		return
 
 	episodeValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 30 and v["length"] < 84)
 	episodes = len(episodeValues)
 	movieValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 65 and v["length"] < 180)
 	movies = len(movieValues)
-	base = fname
 	print "e,m", episodes, movies, [(k,v["length"]) for (k,v) in tracks.iteritems()]
 
-	if episodes == 4 and movies == 2: # stargate hack
-	    for k in order:
-		    if k not in [5,6,7]:
-			    continue
-		    fname = "%s-%d.mkv"%(base, k)
-		    yield (k, fname, tracks[k])
-
-	elif episodes > movies:
+	if episodes > movies:
 		print "TV series", episodeValues
 		episodeValues = episodeValues.keys()
 
@@ -97,18 +102,18 @@ def decide_files(fname):
 			if k not in episodeValues:
 				continue
 			fname = "%s-%d.mkv"%(base, k)
-			yield (k, fname, tracks[k])
+			yield {"number":k, "fname":fname, "track":tracks[k]}
+
 	elif movies == 1:
 		print "Movie", movieValues
 		fname = "%s.mkv"%base
 		k = movieValues.keys()[0]
-		yield (k, fname, tracks[k])
+		yield {"number":k, "fname":fname, "track":tracks[k]}
+
 	else:
 		print "Something else!", movies, episodes
-		for k in sorted(movieValues):
-			#print k, tracks[k]
-			fname = "%s-%d.mkv"%(base, k)
-			yield (k, fname, tracks[k])
+		print tracks
+		raise Exception
 
 def get_idname(root):
 	data = subprocess.check_output(["./dvdid", root])
@@ -117,6 +122,12 @@ def get_idname(root):
 def read_disk(root):
 	idname = get_idname(root)
 	read_idname(idname)
+
+def strip_entry(m):
+	m["track"] = m["track"]["id"]
+	del m["fname"]
+	del m["number"]
+	return m
 
 def read_idname(idname):
 	fname = "tracks/" + idname
@@ -129,16 +140,18 @@ def read_idname(idname):
 	tracks = decide_files(fname)
 	tracks = list(tracks)
 	print tracks
-	open(fname + ".tracks", "w").write(dumps(list([x[:2] for x in tracks])))
+	open(fname + ".tracks", "w").write(dumps(list([strip_entry(x) for x in tracks])))
 
 def check_disks():
 	ret = True
 	for fname in listdir("tracks"):
 		if fname.startswith("."):
 			continue
+		if fname.endswith(".trackmap"):
+			continue
 		if fname.endswith(".tracks"):
 			wanted_tracks = loads(open("tracks/" + fname).read())
-			gotten_tracks = [list(x[:2]) for x in decide_files("tracks/" + fname.replace(".tracks", ""))]
+			gotten_tracks = [strip_entry(x) for x in decide_files("tracks/" + fname.replace(".tracks", ""))]
 			if wanted_tracks == gotten_tracks:
 				print fname, "is ok", wanted_tracks
 			else:
