@@ -42,7 +42,7 @@ def handbrakeList(root, fname):
 		tracks[value]["chapters"] = chapters
 
 	return tracks, order
-	
+
 def reencode(root):
 	idname = get_idname(root)
 	fname = "tracks/" + idname

@@ -1,16 +1,15 @@
 from os.path import exists
-from subprocess import Popen, PIPE
+import subprocess
 from xml.dom.minidom import parseString
 from sys import argv
 from json import dumps, loads
 from os import listdir
 
 def read_lsdvd(root, fname):
-	cmd = "lsdvd -Ox -x '%s'"%root
+	cmd = ["lsdvd", "-Ox", "-x", root]
 	print cmd
 	print fname
-	p = Popen(cmd, shell=True, stdout = PIPE)
-	data = p.stdout.read()
+	data = subprocess.check_output(cmd)
 	if len(data) == 0:
 		raise Exception
 	data = unicode(data, errors="ignore")
@@ -91,30 +90,28 @@ def decide_files(fname):
 		    yield (k, fname, tracks[k])
 
 	elif episodes > movies:
-		#print "TV series", episodeValues
+		print "TV series", episodeValues
 		episodeValues = episodeValues.keys()
-		
+
 		for k in order:
 			if k not in episodeValues:
 				continue
 			fname = "%s-%d.mkv"%(base, k)
 			yield (k, fname, tracks[k])
-	elif movies == 1: 
-		#print "Movie", movieValues
+	elif movies == 1:
+		print "Movie", movieValues
 		fname = "%s.mkv"%base
 		k = movieValues.keys()[0]
 		yield (k, fname, tracks[k])
 	else:
-		#print "Something else!", movies, episodes
+		print "Something else!", movies, episodes
 		for k in sorted(movieValues):
 			#print k, tracks[k]
 			fname = "%s-%d.mkv"%(base, k)
 			yield (k, fname, tracks[k])
 
 def get_idname(root):
-	cmd = "./dvdid '%s'"%root
-	p = Popen(cmd, shell=True, stdout = PIPE)
-	data = p.stdout.read()
+	data = subprocess.check_output(["./dvdid", root])
 	return data.replace("|", "_").strip()
 
 def read_disk(root):

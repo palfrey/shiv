@@ -1,6 +1,6 @@
 [submodule "ext/dvdid"]
 	path = ext/dvdid
-	url = git://github.com/rdp/dvdid.git
+	url = git://github.com/palfrey/dvdid.git
 [submodule "ext/urlgrab"]
 	path = ext/urlgrab
 	url = git://github.com/palfrey/urlgrab.git
