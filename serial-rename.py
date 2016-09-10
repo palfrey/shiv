@@ -8,7 +8,7 @@ import re
 cdir = join(expanduser("~"),".cache/renamer")
 cache = Cache(debug=False,cache=cdir)
 
-(_, path, prefix, series, season) = argv
+(_, path, prefix, series, season) = argv[:5]
 season = int(season)
 
 def epguides(name):
@@ -18,8 +18,6 @@ def epguides(name):
 		eps[(int(season),int(epnum))] = title
 	return eps
 
-prefix = "%s %dx"%(prefix, season)
-#prefix = "%s "%prefix
 eps = epguides(series)
 
 def atoi(text):
@@ -39,7 +37,8 @@ def date_key(text):
 key = natural_keys
 key = date_key
 
-for i,x in enumerate(sorted([x for x in listdir(path) if x.find(".mp4")!=-1], key=key)):
+extra = 1
+for i,x in enumerate(sorted([x for x in listdir(path) if x.find(".mkv")!=-1], key=key)):
 	ep = i + 1
 	origpath = join(path, x)
 	ext = splitext(x)[1]
@@ -47,12 +46,14 @@ for i,x in enumerate(sorted([x for x in listdir(path) if x.find(".mp4")!=-1], ke
 	#pair = "foo"
 	if pair in eps:
 		name = eps[(season, ep)].strip()
-		to = "%s%02d - %s%s"%(prefix, ep, name, ext)
+		to = "%s %dx%02d - %s%s"%(prefix, season, ep, name, ext)
 	else:
-		to = "%s%02d%s"%(prefix, ep, ext)
+		to = "%s Season %d Extra %02d%s"%(prefix, season, extra, ext)
+		extra +=1
 	fullpath = join(path, to)
 	if origpath != fullpath:
 		print origpath, fullpath
-		#rename(origpath, fullpath)
+		if len(argv)>5 and argv[5] == "-r":
+			rename(origpath, fullpath)
 
 

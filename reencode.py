@@ -5,67 +5,11 @@ from stats import *
 from subprocess import Popen, PIPE
 from optparse import OptionParser
 import re
+from check_disks import read_lsdvd, decide_files, get_idname
 
 parser = OptionParser()
 parser.add_option("--chapter", dest="byChapter", default=False, action="store_true")
 (opts, folders) = parser.parse_args()
-
-def lsdvd(root):
-	cmd = "lsdvd -Ox -x '%s'"%root
-	p = Popen(cmd, shell=True, stdout = PIPE)
-	data = p.stdout.read()
-	if len(data) == 0:
-		raise Exception
-	data = unicode(data, errors="ignore")
-	data = data.replace("&", "&amp;")
-	open("dump", "wb").write(data)
-	xml = parseString(data)
-
-	tracks = {}
-
-	for track in xml.getElementsByTagName("track"):
-		id = None
-		#print [x.nodeName for x in track.childNodes]
-		for child in track.childNodes:
-			if child.nodeName == u"ix":
-				assert id == None,id
-				id = int(child.firstChild.data)
-			elif child.nodeName == u"length":
-				assert id != None
-				length = float(child.firstChild.data)
-				tracks[id] = {"length": length/60.0}
-			elif child.nodeName == "subp":
-				assert tracks.has_key(id)
-				element = child.getElementsByTagName("langcode")[0]
-				if element.firstChild != None:
-					if "subp" not in tracks[id]:
-						tracks[id]["subp"] = {}
-					if element.firstChild.data == "xx":
-						raise Exception, (id, tracks[id], child.toxml())
-					tracks[id]["subp"][element.firstChild.data] = child.getElementsByTagName("ix")[0].firstChild.data
-			elif child.nodeName == "audio":
-				assert tracks.has_key(id)
-				if "audio" not in tracks[id]:
-					tracks[id]["audio"] = {}
-				element = langcode = child.getElementsByTagName("langcode")[0]
-				#print element.toxml()
-				if element.firstChild != None:
-					langcode = element.firstChild.data
-					if langcode not in tracks[id]["audio"]:
-						audioId = child.getElementsByTagName("ix")[0].firstChild.data
-						tracks[id]["audio"][langcode] = audioId
-			elif child.nodeName == "chapter":
-				if "chapters" not in tracks[id]:
-					tracks[id]["chapters"] = {}
-				ix = int(child.getElementsByTagName("ix")[0].firstChild.data)
-				length = child.getElementsByTagName("length")[0].firstChild.data
-				tracks[id]["chapters"][ix] = float(length) / 60.0
-
-			else:
-				#print "node", child.nodeName
-				pass
-
-	return tracks
 
 def handbrakeList(root, fname):
 	titlePattern = re.compile("\+ title (\d+):")
@@ -73,9 +17,11 @@ def handbrakeList(root, fname):
 	chapterPattern = re.compile("\+ (\d+): cells \d+->\d+, \d+ blocks, duration (\d+):(\d+):(\d+)")
 
 	tracks = {}
+	order = []
 	for line in open(fname).readlines():
 		value = int(line)
-		cmd = "HandBrakeCLI --scan -i %s --title %d"%(root, value)
+		order.append(value)
+		cmd = "HandBrakeCLI --scan -i '%s' --title %d"%(root, value)
 		p = Popen(cmd, shell=True, stdout = PIPE, stderr = PIPE)
 		data = p.stderr.read()
 		data = unicode(data, errors="ignore")
@@ -95,79 +41,36 @@ def handbrakeList(root, fname):
 			chapters[int(chapter[0])] = (chapter[1]*60)+chapter[2]+(chapter[3]/60.0)
 		tracks[value]["chapters"] = chapters
 
-	return tracks
+	return tracks, order
 	
 def reencode(root):
-	cmd = "./dvdid '%s'"%root
-	p = Popen(cmd, shell=True, stdout = PIPE)
-	data = p.stdout.read()
-	fname = data.replace("|", "_")
-	if exists(fname):
-		tracks = handbrakeList(root, fname)
-	else:
-		tracks = lsdvd(root)
+	idname = get_idname(root)
+	fname = "tracks/" + idname
+	read_lsdvd(root, fname)
+	items = list(decide_files(fname))
+	print items
 
-	print root
-	#print tracks
-	if tracks == {}:
-		return
-
-	if opts.byChapter:
-		for k in sorted(tracks.keys()):
-			for c in sorted(tracks[k]["chapters"].keys()):
-				fname = "%s-%d-%d.mp4"%(root, k, c)
-				if tracks[k]["chapters"][c] > 15:
-					encode(root, k, fname, tracks[k], c)
-
-	else:
-		episodeValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 15 and v["length"] < 65)
-		episodes = len(episodeValues)
-		movieValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 65)
-		movies = len(movieValues)
-		if episodes > movies:
-			print "TV series", episodeValues
-			length = -1
-			base = root
-			if isdir(root):
-				base = basename(root)
-				cmd = "./dvdid '%s'"%root
-				print cmd
-				p = Popen(cmd, shell=True, stdout = PIPE)
-				data = p.stdout.read()
-				base += "-" + data.replace("|", "_")
-
-			for k in sorted(episodeValues):
-				fname = "%s-%d.mp4"%(base, k)
-				if length != tracks[k]["length"]:
-					encode(root, k, fname, tracks[k])
-					length = tracks[k]["length"]
-		elif movies == 1: 
-			print "Movie", movieValues
-			if isdir(root):
-				base = basename(root)
-			else:
-				base = root
-			fname = "%s.mp4"%base
-			k = movieValues.keys()[0]
-			encode(root, k, fname, tracks[k])
-		else:
-			print "Something else!"
-			for k in sorted(movieValues):
-				fname = "%s-%d.mp4"%(root, k)
-				encode(root, k, fname, tracks[k])
+	for k, fname, tracks in items:
+		encode(root, k, fname, tracks)
 
 def encode(root, k, fname, info, chapter = None):
-	cmd = "HandBrakeCLI -e x264 -q 21 -a 1 -E lame -B 128 -6 dpl2 -R Auto -D 0.0 -f mp4 -X 640 --loose-anamorphic -i \"%s\" --denoise weak --decomb -t %d -o \"%s\""%(root, k, fname)
+	fname = fname.replace("/","")
+	cmd = "HandBrakeCLI -e x264 -q 19 -a 1 -E lame -B 128 -6 dpl2 -R Auto -D 0.0 -X 720 --loose-anamorphic -i \"%s\" --denoise weak --decomb -t %d -o \"%s\" --no-dvdnav"%(root, k, fname)
 	if "subp" in info and "audio" in info and "ja" in info["audio"]:
 		print "anime"
 		cmd += " -a %s -s %s"%(info["audio"]["ja"], info["subp"]["en"])
+	#elif "subp" in info and "en" in info["subp"]:
+	#	print "subtitles (foreign only)"
+	#	cmd += " --subtitle scan --subtitle-forced %s"%(info["subp"]["en"])
 	if chapter!=None:
 		cmd += " -c %d"%chapter
 	print cmd
 	if not exists(fname):
+		#raise Exception, cmd
 		system(cmd)
-		pass
-	mplayer = popen("mplayer -vo null -frames 0 -identify '%s' 2>&1"%fname).readlines()
+	cmd = "mplayer -vo null -frames 0 -identify '%s' 2>&1" % fname
+	print cmd
+	mplayer = popen(cmd).readlines()
 	values = {}
 	for l in mplayer:
 		if l.find("=")!=-1 and l.find(" ")==-1 and l.find("==")==-1:
@@ -184,6 +87,7 @@ if len(folders) == 0:
 	for root, dirs, files in walk(".", topdown=False):
 		dirs = sorted(dirs)
 		if "VIDEO_TS" in dirs:
+			print "root", root
 			reencode(root)
 else:
 	for a in folders:

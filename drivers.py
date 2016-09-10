@@ -19,23 +19,41 @@ def handler(*args, **kwargs):
 	handle_mount(device_props)
 	
 def handle_mount(device_props):
-	mount = device_props.Get('org.freedesktop.UDisks.Device', "DeviceMountPaths")
-	#print device_props.GetAll('org.freedesktop.UDisks.Device')
-	print "mount", mount
-	for m in mount:
-		name = basename(m)
-		print name
-		#if not exists(name):
-		#cmd = "vobcopy -m -i '%s' -t '%s'"%(m, name)
-		cmd = "python reencode.py %s"%m
+	media = device_props.Get('org.freedesktop.UDisks.Device', 'DriveMedia')
+	if media == "optical_cd":
+		deviceFile = device_props.Get('org.freedesktop.UDisks.Device', 'DeviceFileById')[0]
+		cmd = "abcde -d %s"%deviceFile
 		print cmd
 		result = system(cmd)
-		if result!=0:
-			raise Exception, result
+		print result
+	else:
+		print "media type", media
+		mount = device_props.Get('org.freedesktop.UDisks.Device', "DeviceMountPaths")
+		print "mount", mount
+		if len (mount) == 0:
+			media = device_props.Get('org.freedesktop.UDisks.Device', 'DeviceIsMediaAvailable')
+			if media:
+				deviceFile = device_props.Get('org.freedesktop.UDisks.Device', 'DeviceFileById')[0]
+				cmd = "pmount %s" % deviceFile
+				print cmd
+				system(cmd)
+				mount = device_props.Get('org.freedesktop.UDisks.Device', "DeviceMountPaths")
+			else:
+				return
+		for m in mount:
+			name = basename(m)
+			print name
+			#if not exists(name):
+			#cmd = "vobcopy -m -i '%s' -t '%s'"%(m, name)
+			cmd = "python reencode.py %s"%m
+			print cmd
+			result = system(cmd)
+			if result!=0:
+				raise Exception, result
 
-		cmd = "eject '%s'"%device_props.Get('org.freedesktop.UDisks.Device', "DeviceFile")
-		print cmd
-		system(cmd)
+			cmd = "eject '%s'"%device_props.Get('org.freedesktop.UDisks.Device', "DeviceFile")
+			print cmd
+			system(cmd)
 
 for dev in ud_manager.EnumerateDevices():
 	device_obj = bus.get_object("org.freedesktop.UDisks", dev)
