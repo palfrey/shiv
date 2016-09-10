@@ -88,11 +88,20 @@ def decide_files(fname):
 			yield {"number":k, "fname":fname, "track": tracks[entry["track"]], "startChapter":entry["startChapter"], "endChapter":entry["endChapter"]}
 		return
 
+	if len(tracks) == 99:
+		print "Protected with RipGuard, need a .trackmap"
+		raise Exception
+
 	episodeValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 30 and v["length"] < 84)
 	episodes = len(episodeValues)
 	movieValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 65 and v["length"] < 180)
 	movies = len(movieValues)
 	print "e,m", episodes, movies, [(k,v["length"]) for (k,v) in tracks.iteritems()]
+
+	if episodes > 20: # too many!
+		print "Too many!", movies, episodes
+		print tracks
+		raise Exception
 
 	if episodes > movies:
 		print "TV series", episodeValues
