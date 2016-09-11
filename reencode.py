@@ -55,7 +55,7 @@ def reencode(root):
 
 def encode(root, data):
 	fname = data["fname"].replace("/","")
-	cmd = "HandBrakeCLI -e x264 -q 19 -a 1 -E lame -B 128 -6 dpl2 -R Auto -D 0.0 -X 720 --loose-anamorphic -i \"%s\" --denoise weak --decomb --title %d -o \"%s\" --no-dvdnav"%(root, data["track"]["id"], fname)
+	cmd = "HandBrakeCLI -e x264 -q 19 -a 1 -E lame -B 128 -6 dpl2 -R Auto -D 0.0 -X 720 --loose-anamorphic -i %s --denoise weak --decomb --title %d -o %s --no-dvdnav"%(root, data["track"]["id"], fname)
 	info = data["track"]
 	if "subp" in info and "audio" in info and "ja" in info["audio"]:
 		print "anime"
@@ -65,12 +65,12 @@ def encode(root, data):
 	#	cmd += " --subtitle scan --subtitle-forced %s"%(info["subp"]["en"])
 	if "startChapter" in data:
 		cmd += " -c %d-%d"%(data["startChapter"], data["endChapter"])
-	cmd = cmd.split(" ")
 	print cmd
+	cmd = cmd.split(" ")
 	if not exists(fname):
 		#raise Exception, cmd
 		check_output(cmd)
-	cmd = "mplayer -vo null -frames 0 -identify '%s' 2>&1" % fname
+	cmd = "mplayer -vo null -frames 0 -identify %s" % fname
 	cmd = cmd.split(" ")
 	print cmd
 	mplayer = check_output(cmd)
