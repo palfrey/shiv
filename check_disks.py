@@ -92,7 +92,7 @@ def decide_files(fname):
 		print "Protected with RipGuard, need a .trackmap"
 		raise Exception
 
-	episodeValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 30 and v["length"] < 84)
+	episodeValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 25 and v["length"] < 84)
 	episodes = len(episodeValues)
 	movieValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 65 and v["length"] < 180)
 	movies = len(movieValues)
@@ -104,7 +104,7 @@ def decide_files(fname):
 		raise Exception
 
 	if episodes > movies:
-		print "TV series", episodeValues
+		print "TV series", len(episodeValues), [(k,v["length"]) for (k,v) in episodeValues.iteritems()]
 		episodeValues = episodeValues.keys()
 
 		for k in order:
