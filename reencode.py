@@ -75,11 +75,16 @@ def encode(root, data):
 	print cmd
 	mplayer = check_output(cmd)
 	values = {}
-	for l in mplayer:
+	for l in mplayer.split("\n"):
 		if l.find("=")!=-1 and l.find(" ")==-1 and l.find("==")==-1:
 			key,value = l.split("=",1)
 			values[key] = value.strip()
-	length = float(values["ID_LENGTH"])
+	try:
+	    length = float(values["ID_LENGTH"])
+	except KeyError:
+	    print mplayer
+	    print values
+	    raise
 	diff = abs((length/60.0)-info["length"])
 	if diff > 1:
 		print info["length"]
