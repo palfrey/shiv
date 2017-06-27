@@ -193,7 +193,9 @@ def decide_files(fname):
 			fname = "%s-%d.mkv"%(base, k)
 			yield {"number":k, "fname":fname, "track":tracks[k]}
 
-	elif movies == 1:
+	elif movies > 1:
+		if movies != 1:
+			print "%d movies, assuming the first one is the right one..." % movies
 		print "Movie", movieValues
 		k = movieValues.keys()[0]
 		if "name" in tracks[k]:
@@ -204,7 +206,7 @@ def decide_files(fname):
 
 	else:
 		print "Something else!", movies, episodes
-		print tracks
+		print movieValues
 		raise Exception
 
 def is_bluray(root):
