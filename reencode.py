@@ -1,14 +1,16 @@
 from os import walk, system, popen
 from os.path import exists, isdir, basename
+import os
 from xml.dom.minidom import parseString
 from stats import *
 from subprocess import Popen, PIPE, check_output
 from optparse import OptionParser
 import re
-from check_disks import read_lsdvd, decide_files, get_idname
+from check_disks import read_lsdvd, decide_files, get_idname, is_bluray, read_makemkv
 
 parser = OptionParser()
 parser.add_option("--chapter", dest="byChapter", default=False, action="store_true")
+parser.add_option("--uuid", dest="uuid", default=None)
 (opts, folders) = parser.parse_args()
 
 def handbrakeList(root, fname):
@@ -43,35 +45,8 @@ def handbrakeList(root, fname):
 
 	return tracks, order
 
-def reencode(root):
-	idname = get_idname(root)
-	fname = "tracks/" + idname
-	read_lsdvd(root, fname)
-	items = list(decide_files(fname))
-	print items
-
-	for data in items:
-		encode(root, data)
-
-def encode(root, data):
-	fname = data["fname"].replace("/","")
-	cmd = "HandBrakeCLI -e x264 -q 19 -a 1 -E lame -B 128 -6 dpl2 -R Auto -D 0.0 -X 720 --loose-anamorphic -i %s --denoise weak --decomb --title %d -o %s --no-dvdnav"%(root, data["track"]["id"], fname)
-	info = data["track"]
-	if "subp" in info and "audio" in info and "ja" in info["audio"]:
-		print "anime"
-		cmd += " -a %s -s %s"%(info["audio"]["ja"], info["subp"]["en"])
-	#elif "subp" in info and "en" in info["subp"]:
-	#	print "subtitles (foreign only)"
-	#	cmd += " --subtitle scan --subtitle-forced %s"%(info["subp"]["en"])
-	if "startChapter" in data:
-		cmd += " -c %d-%d"%(data["startChapter"], data["endChapter"])
-	print cmd
-	cmd = cmd.split(" ")
-	if not exists(fname):
-		#raise Exception, cmd
-		check_output(cmd)
-	cmd = "mplayer -vo null -frames 0 -identify %s" % fname
-	cmd = cmd.split(" ")
+def check_file(fname, expected_length):
+	cmd = ["mplayer", "-vo", "null", "-frames", "0", "-identify", fname]
 	print cmd
 	mplayer = check_output(cmd)
 	values = {}
@@ -85,11 +60,74 @@ def encode(root, data):
 	    print mplayer
 	    print values
 	    raise
-	diff = abs((length/60.0)-info["length"])
+	diff = abs((length/60.0)-expected_length)
 	if diff > 1:
-		print info["length"]
+		print expected_length
 		print length, length/60.0
 		raise Exception, diff
+
+def reencode(root):
+	if opts.uuid == None:
+		idname = get_idname(root)
+	else:
+		idname = opts.uuid
+	fname = "tracks/" + idname
+	if is_bluray(root):
+		read_makemkv(root, fname)
+	else:
+		read_lsdvd(root, fname)
+	items = list(decide_files(fname))
+	print items
+
+	for data in items:
+		fname = data["fname"].replace("/","")
+		if not exists(fname):
+			if is_bluray(root):
+				bluray_encode(root, data)
+			else:
+				dvd_encode(root, data)
+		check_file(fname, data["track"]["length"])
+
+def dvd_encode(root, data):
+	fname = data["fname"].replace("/","")
+	cmd = "HandBrakeCLI -e x264 -q 19 -a 1 -E lame -B 128 -6 dpl2 -R Auto -D 0.0 -X 720 --loose-anamorphic -i %s --denoise weak --decomb --title %d -o %s --no-dvdnav"%(root, data["track"]["id"], fname)
+	info = data["track"]
+	if "subp" in info and "audio" in info and "ja" in info["audio"]:
+		print "anime"
+		cmd += " -a %s -s %s"%(info["audio"]["ja"], info["subp"]["en"])
+	#elif "subp" in info and "en" in info["subp"]:
+	#	print "subtitles (foreign only)"
+	#	cmd += " --subtitle scan --subtitle-forced %s"%(info["subp"]["en"])
+	if "startChapter" in data:
+		cmd += " -c %d-%d"%(data["startChapter"], data["endChapter"])
+	print cmd
+	cmd = cmd.split(" ")
+	check_output(cmd)
+
+def bluray_encode(root, data):
+	track_id = int(data["track"]["id"])
+	makemkv_folder = "mkv_temp/%s/%d" % (opts.uuid, track_id)
+	if not exists(makemkv_folder):
+		os.makedirs(makemkv_folder)
+	track_path = os.path.join(makemkv_folder, data["track"]["track_path"])
+	if not exists(track_path):
+		cmd = "makemkvcon -r --decrypt mkv disc:0 %d %s" % (track_id, makemkv_folder)
+		print cmd
+		result = system(cmd)
+		if result != 0:
+			raise Exception
+	fname = data["fname"].replace("/","")
+	cmd = "HandBrakeCLI -e x264 --two-pass --quality 23 -a 1 -E lame -B 192 -R Auto -X 1920 --loose-anamorphic -i %s --denoise weak --decomb -o '%s' --subtitle-lang-list eng --all-subtitles"%(track_path, fname)
+	info = data["track"]
+	if "subp" in info and "audio" in info and "ja" in info["audio"]:
+		print "anime"
+		cmd += " -a %s -s %s"%(info["audio"]["ja"], info["subp"]["eng"])
+		raise Exception
+	print cmd
+	#raise Exception
+	result = system(cmd)
+	if result != 0:
+		raise Exception
 
 if len(folders) == 0:
 	for root, dirs, files in walk(".", topdown=False):
@@ -100,3 +138,4 @@ if len(folders) == 0:
 else:
 	for a in folders:
 		reencode(a)
+print "done"

@@ -18,6 +18,11 @@ def handler(*args, **kwargs):
 	device_props = dbus.Interface(obj, dbus.PROPERTIES_IFACE)
 	handle_mount(device_props)
 	
+def eject(device_props):
+	cmd = "eject '%s'"%device_props.Get('org.freedesktop.UDisks.Device', "DeviceFile")
+	print cmd
+	system(cmd)
+
 def handle_mount(device_props):
 	media = device_props.Get('org.freedesktop.UDisks.Device', 'DriveMedia')
 	if media == "optical_cd":
@@ -26,7 +31,16 @@ def handle_mount(device_props):
 		print cmd
 		result = system(cmd)
 		print result
-	else:
+	elif media == "optical_bd":
+		deviceFile = device_props.Get('org.freedesktop.UDisks.Device', 'DeviceFileById')[0]
+		uuid = device_props.Get('org.freedesktop.UDisks.Device', 'IdUuid')
+		cmd = "python reencode.py %s --uuid %s" % (deviceFile, uuid)
+		print cmd
+		result = system(cmd)
+		if result!=0:
+			raise Exception, result
+		eject(device_props)
+	elif media == "optical_dvd":
 		print "media type", media
 		mount = device_props.Get('org.freedesktop.UDisks.Device', "DeviceMountPaths")
 		print "mount", mount
@@ -50,10 +64,9 @@ def handle_mount(device_props):
 			result = system(cmd)
 			if result!=0:
 				raise Exception, result
-
-			cmd = "eject '%s'"%device_props.Get('org.freedesktop.UDisks.Device', "DeviceFile")
-			print cmd
-			system(cmd)
+			eject(device_props)
+	else:
+	    print("Unrecognised media: '%s'" % media)
 
 for dev in ud_manager.EnumerateDevices():
 	device_obj = bus.get_object("org.freedesktop.UDisks", dev)
