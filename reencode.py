@@ -116,8 +116,8 @@ def bluray_encode(root, data):
 		result = system(cmd)
 		if result != 0:
 			raise Exception
-	fname = data["fname"].replace("/","")
-	cmd = "HandBrakeCLI -e x264 --two-pass --quality 23 -a 1 -E lame -B 192 -R Auto -X 1920 --loose-anamorphic -i %s --denoise weak --decomb -o '%s' --subtitle-lang-list eng --all-subtitles"%(track_path, fname)
+	fname = data["fname"].replace("/","").replace("'", "\\'")
+	cmd = "HandBrakeCLI -e x264 --two-pass --quality 23 -a 1 -E lame -B 192 -R Auto -X 1920 --loose-anamorphic -i %s --denoise weak --decomb -o \"%s\" --subtitle-lang-list eng --all-subtitles"%(track_path.replace("'", "\\'"), fname)
 	info = data["track"]
 	if "subp" in info and "audio" in info and "ja" in info["audio"]:
 		print "anime"
