@@ -193,7 +193,7 @@ def decide_files(fname):
 			fname = "%s-%d.mkv"%(base, k)
 			yield {"number":k, "fname":fname, "track":tracks[k]}
 
-	elif movies > 1:
+	elif movies >= 1:
 		if movies != 1:
 			print "%d movies, assuming the first one is the right one..." % movies
 		print "Movie", movieValues
