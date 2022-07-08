@@ -34,7 +34,7 @@ elif len(search) == 0:
 else:
     for i, show in enumerate(search):
         print("%s: %s" % (i, show.title))
-    index = int(input("# "))
+    index = int(eval(input("# ")))
     show = search[index]
 
 def check_subtitles_full(subtitles, retry_flag=False):
