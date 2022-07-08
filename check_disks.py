@@ -29,8 +29,12 @@ def read_makemkv(root, fname):
 		data = open(fname).read()
 	else:
 		cmd = ["makemkvcon", "-r", "info", "disc:0"] # FIXME: Ignores root and I can't seem to make it not...
-		print cmd
-		data = subprocess.check_output(cmd)
+		print " ".join(cmd)
+		try:
+		    data = subprocess.check_output(cmd)
+		except subprocess.CalledProcessError, e:
+		    print e.output
+		    raise
 		if len(data) == 0:
 			raise Exception
 		data = unicode(data, errors="ignore")
@@ -116,7 +120,7 @@ def parse_makemkv(data):
 				tracks[id]["track_path"] = data
 			elif kind == 2:
 				tracks[id]["name"] = data
-			elif kind in [8,10,11,16,25,26,28,29,30,31,33]:
+			elif kind in [8,10,11,15,16,25,26,28,29,30,31,33,49]:
 				pass
 			else:
 				print items
@@ -172,9 +176,9 @@ def decide_files(fname):
 		print "Protected with RipGuard, need a .trackmap"
 		raise Exception
 
-	episodeValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 25 and v["length"] < 84)
+	episodeValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 25 and v["length"] < 87)
 	episodes = len(episodeValues)
-	movieValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 65 and v["length"] < 180)
+	movieValues = dict((k,v) for (k,v) in tracks.iteritems() if v["length"] > 65 and v["length"] < 200)
 	movies = len(movieValues)
 	print "e,m", episodes, movies, [(k,v["length"]) for (k,v) in tracks.iteritems()]
 
@@ -183,7 +187,11 @@ def decide_files(fname):
 		print tracks
 		raise Exception
 
-	if episodes > movies:
+	totalEpisodeLength = sum([x["length"] for x in episodeValues.values()])
+	movieLength = movieValues[movieValues.keys()[0]]["length"] if movies > 0 else 0
+	print "Total lengths", totalEpisodeLength, movieLength
+
+	if episodes > movies and totalEpisodeLength > 110:
 		print "TV series", len(episodeValues), [(k,v["length"]) for (k,v) in episodeValues.iteritems()]
 		episodeValues = episodeValues.keys()
 
@@ -206,8 +214,11 @@ def decide_files(fname):
 
 	else:
 		print "Something else!", movies, episodes
-		print movieValues
-		raise Exception
+		print movieValues, episodeValues
+
+		for k in order:
+			fname = "%s-%d.mkv"%(base, k)
+			yield {"number":k, "fname":fname, "track":tracks[k]}
 
 def is_bluray(root):
 	st = os.stat(root)

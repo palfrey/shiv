@@ -14,7 +14,7 @@ season = int(season)
 def epguides(name):
 	inf = {"cache":cache,"core":(lambda i,eps:eps)}
 	eps = {}
-	for (season, epnum, date,title) in fetch.epguides().run(inf,name):
+	for (season, epnum, date,title) in fetch.tvdb().run(inf,name):
 		eps[(int(season),int(epnum))] = title
 	return eps
 
@@ -38,7 +38,7 @@ key = natural_keys
 key = date_key
 
 extra = 1
-for i,x in enumerate(sorted([x for x in listdir(path) if x.find(".mkv")!=-1], key=key)):
+for i,x in enumerate(sorted([x for x in listdir(path) if x.find(".mp4")!=-1], key=key)):
 	ep = i + 1
 	origpath = join(path, x)
 	ext = splitext(x)[1]
@@ -52,7 +52,7 @@ for i,x in enumerate(sorted([x for x in listdir(path) if x.find(".mkv")!=-1], ke
 		extra +=1
 	fullpath = join(path, to)
 	if origpath != fullpath:
-		print origpath, fullpath
+		print(origpath, fullpath)
 		if len(argv)>5 and argv[5] == "-r":
 			rename(origpath, fullpath)
 

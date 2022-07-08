@@ -6,3 +6,4 @@ dump
 tracks/
 makemkv/
 mkv_temp/
+*.pyc

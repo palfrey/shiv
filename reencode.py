@@ -7,6 +7,7 @@ from subprocess import Popen, PIPE, check_output
 from optparse import OptionParser
 import re
 from check_disks import read_lsdvd, decide_files, get_idname, is_bluray, read_makemkv
+import shellescape
 
 parser = OptionParser()
 parser.add_option("--chapter", dest="byChapter", default=False, action="store_true")
@@ -62,9 +63,7 @@ def check_file(fname, expected_length):
 	    raise
 	diff = abs((length/60.0)-expected_length)
 	if diff > 1:
-		print expected_length
-		print length, length/60.0
-		raise Exception, diff
+		raise Exception, "Missing %f minutes. Expected %f and got %f" %(diff, expected_length, length/60.0)
 
 def reencode(root):
 	if opts.uuid == None:
@@ -77,11 +76,14 @@ def reencode(root):
 	else:
 		read_lsdvd(root, fname)
 	items = list(decide_files(fname))
-	print items
+	print "items", items
+	#raise Exception
 
 	for data in items:
-		fname = data["fname"].replace("/","")
+		print("data", data)
+		fname = data["fname"].replace("/","").replace("'", "\\'").replace(":", " -")
 		if not exists(fname):
+			data["fname"] = fname
 			if is_bluray(root):
 				bluray_encode(root, data)
 			else:
@@ -95,9 +97,14 @@ def dvd_encode(root, data):
 	if "subp" in info and "audio" in info and "ja" in info["audio"]:
 		print "anime"
 		cmd += " -a %s -s %s"%(info["audio"]["ja"], info["subp"]["en"])
-	#elif "subp" in info and "en" in info["subp"]:
-	#	print "subtitles (foreign only)"
-	#	cmd += " --subtitle scan --subtitle-forced %s"%(info["subp"]["en"])
+	elif "subp" in info and "en" in info["subp"]:
+	    if "audio" in info and "en" in info["audio"]:
+	    	print "subtitles (en only)"
+	    	cmd += " --subtitle %s"%(info["subp"]["en"])
+	    else:
+	    	print "subtitles (foreign only)"
+	    	cmd += " --subtitle scan --subtitle-forced %s"%(info["subp"]["en"])
+		raise Exception(cmd)
 	if "startChapter" in data:
 		cmd += " -c %d-%d"%(data["startChapter"], data["endChapter"])
 	print cmd
@@ -116,9 +123,10 @@ def bluray_encode(root, data):
 		result = system(cmd)
 		if result != 0:
 			raise Exception
-	fname = data["fname"].replace("/","").replace("'", "\\'")
-	cmd = "HandBrakeCLI -e x264 --two-pass --quality 23 -a 1 -E lame -B 192 -R Auto -X 1920 --loose-anamorphic -i %s --denoise weak --decomb -o \"%s\" --subtitle-lang-list eng --all-subtitles"%(track_path.replace("'", "\\'"), fname)
-	info = data["track"]
+	fname = data["fname"]
+	track_path = shellescape.quote(track_path)
+	info = data["track"]	
+	cmd = "HandBrakeCLI -e x264 --two-pass --quality 23 --audio %s -E lame -B 192 -R Auto -X 1920 --loose-anamorphic -i %s --denoise weak --decomb -o \"%s\" --subtitle-lang-list eng --all-subtitles"%(info["audio"]["eng"], track_path, fname)
 	if "subp" in info and "audio" in info and "ja" in info["audio"]:
 		print "anime"
 		cmd += " -a %s -s %s"%(info["audio"]["ja"], info["subp"]["eng"])

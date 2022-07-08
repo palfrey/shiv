@@ -21,11 +21,12 @@ def handler(*args, **kwargs):
 def eject(device_props):
 	cmd = "eject '%s'"%device_props.Get('org.freedesktop.UDisks.Device', "DeviceFile")
 	print cmd
+	#raise Exception
 	system(cmd)
 
 def handle_mount(device_props):
 	media = device_props.Get('org.freedesktop.UDisks.Device', 'DriveMedia')
-	if media == "optical_cd":
+	if media in ["optical_cd", "optical_cd_r"]:
 		deviceFile = device_props.Get('org.freedesktop.UDisks.Device', 'DeviceFileById')[0]
 		cmd = "abcde -d %s"%deviceFile
 		print cmd
@@ -40,7 +41,7 @@ def handle_mount(device_props):
 		if result!=0:
 			raise Exception, result
 		eject(device_props)
-	elif media == "optical_dvd":
+	elif media in ["optical_dvd", "optical_dvd_r"]:
 		print "media type", media
 		mount = device_props.Get('org.freedesktop.UDisks.Device', "DeviceMountPaths")
 		print "mount", mount
