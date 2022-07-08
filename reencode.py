@@ -125,8 +125,8 @@ def bluray_encode(root, data):
             raise Exception
     fname = data["fname"]
     track_path = shellescape.quote(track_path)
-    info = data["track"]    
-    cmd = "HandBrakeCLI -e x264 --two-pass --quality 23 --audio %s -E lame -B 192 -R Auto -X 1920 --loose-anamorphic -i %s --denoise weak --decomb -o \"%s\" --subtitle-lang-list eng --all-subtitles"%(info["audio"]["eng"], track_path, fname)
+    info = data["track"]
+    cmd = "HandBrakeCLI -e x264 --two-pass --quality 23 --audio %s -E lame -B 192 -R Auto -X 1920 --loose-anamorphic -i %s --denoise weak --decomb -o \"%s\" --subtitle-lang-list eng --all-subtitles"%(",".join([str(x) for x in info["audio"]["eng"]]), track_path, fname)
     if "subp" in info and "audio" in info and "ja" in info["audio"]:
         print("anime")
         cmd += " -a %s -s %s"%(info["audio"]["ja"], info["subp"]["eng"])

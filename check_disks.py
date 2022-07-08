@@ -137,13 +137,18 @@ def parse_makemkv(data):
             elif kind in [5,6,7,19,20,21,22,29,30,21,33,38]:
                 pass
             elif kind == 3: # identifier
+                lang = items[4]
                 if subkind == 6201: # video
                     pass
                 elif subkind == 6202: # audio
-                    tracks[id]["audio"][items[4]] = int(items[1])
+                    lang = items[4]
+                    if lang not in tracks[id]["audio"]:
+                        tracks[id]["audio"][lang] = []
+                    tracks[id]["audio"][lang].append(int(items[1]))
                 elif subkind == 6203: # subtitles
-                    #raise Exception, items
-                    tracks[id]["subp"][items[4]] = int(items[1])
+                    if lang not in tracks[id]["subp"]:
+                        tracks[id]["subp"][lang] = []
+                    tracks[id]["subp"][lang].append(int(items[1]))      
                 else:
                     print(items)
                     raise Exception(kind, subkind)
@@ -166,7 +171,7 @@ def decide_files(fname):
 
     if exists(fname + ".trackmap"):
         trackmap = json.loads(open(fname + ".trackmap").read())
-        print(trackmap)
+        print("trackmap", trackmap)
         for k, entry in enumerate(trackmap):
             fname = "%s-%d-t%d-s%d-e%d.mkv"%(base, k, entry["track"], entry["startChapter"], entry["endChapter"])
             yield {"number":k, "fname":fname, "track": tracks[entry["track"]], "startChapter":entry["startChapter"], "endChapter":entry["endChapter"]}
