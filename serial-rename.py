@@ -45,7 +45,9 @@ key = date_key
 
 extra = 1
 for i, x in enumerate(
-    sorted([x for x in listdir(path) if x.find(".mp4") != -1], key=key)
+    sorted(
+        [x for x in listdir(path) if x.find(".mp4") != -1 or x.find(".mkv")], key=key
+    )
 ):
     ep = i + 1
     origpath = join(path, x)
