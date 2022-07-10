@@ -1,5 +1,4 @@
 *.mp4
-*.mkv
 handbrake.log
 dump
 .*
@@ -7,3 +6,4 @@ tracks/
 makemkv/
 mkv_temp/
 *.pyc
+output/*
