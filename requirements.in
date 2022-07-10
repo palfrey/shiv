@@ -7,3 +7,6 @@ musicbrainzngs
 discid
 keyring
 shellescape
+
+pytest
+pytest-watch

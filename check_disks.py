@@ -290,12 +290,9 @@ def read_idname(idname):
     fname = "tracks/" + idname
 
     if not exists(fname):
-        data = read_lsdvd(root, fname)
-    else:
-        data = open(fname).read()
+        raise Exception(fname)
 
-    tracks = decide_files(fname)
-    tracks = list(tracks)
+    tracks = list(decide_files(fname))
     print(tracks)
     open(fname + ".tracks", "w").write(dumps(list([strip_entry(x) for x in tracks])))
 
