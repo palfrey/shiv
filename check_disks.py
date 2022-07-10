@@ -205,7 +205,7 @@ def decide_files(fname):
         raise Exception
 
     episodeValues = dict(
-        (k, v) for (k, v) in tracks.items() if v["length"] > 25 and v["length"] < 87
+        (k, v) for (k, v) in tracks.items() if v["length"] > 5 and v["length"] < 87
     )
     episodes = len(episodeValues)
     movieValues = dict(
@@ -214,7 +214,7 @@ def decide_files(fname):
     movies = len(movieValues)
     print("e,m", episodes, movies, [(k, v["length"]) for (k, v) in tracks.items()])
 
-    if episodes > 20:  # too many!
+    if episodes > 30:  # too many!
         print("Too many!", movies, episodes)
         print(tracks)
         raise Exception

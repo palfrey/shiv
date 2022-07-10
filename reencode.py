@@ -55,7 +55,7 @@ def handbrakeList(root, fname):
 def check_file(fname, expected_length):
     cmd = ["mplayer", "-vo", "null", "-frames", "0", "-identify", fname]
     print(cmd)
-    mplayer = check_output(cmd)
+    mplayer = check_output(cmd, encoding="utf-8")
     values = {}
     for l in mplayer.split("\n"):
         if l.find("=") != -1 and l.find(" ") == -1 and l.find("==") == -1:
@@ -87,7 +87,6 @@ def reencode(root):
         read_lsdvd(root, fname)
     items = list(decide_files(fname))
     print("items", items)
-    # raise Exception
 
     for data in items:
         print("data", data)
@@ -119,7 +118,6 @@ def dvd_encode(root, data):
         else:
             print("subtitles (foreign only)")
             cmd += " --subtitle scan --subtitle-forced %s" % (info["subp"]["en"])
-        raise Exception(cmd)
     if "startChapter" in data:
         cmd += " -c %d-%d" % (data["startChapter"], data["endChapter"])
     print(cmd)
