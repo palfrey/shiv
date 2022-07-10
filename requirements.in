@@ -1,2 +1,8 @@
 pre-commit
 pip-tools
+
+dbus-python
+PyGObject
+musicbrainzngs
+discid
+keyring
