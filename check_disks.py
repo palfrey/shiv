@@ -266,7 +266,7 @@ def is_bluray(root):
 
 def get_idname(root):
     if exists(join(root, "VIDEO_TS")):
-        data = subprocess.check_output(["./dvdid", root])
+        data = subprocess.check_output(["./dvdid", root], encoding="utf-8")
         return data.replace("|", "_").strip()
     elif is_bluray(root):
         raise Exception("blu ray")
