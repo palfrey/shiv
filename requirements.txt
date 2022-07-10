@@ -58,6 +58,8 @@ pyyaml==6.0
     # via pre-commit
 secretstorage==3.3.2
     # via keyring
+shellescape==3.8.1
+    # via -r requirements.in
 six==1.16.0
     # via virtualenv
 toml==0.10.2
