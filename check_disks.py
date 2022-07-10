@@ -8,6 +8,7 @@ import json
 import stat
 import csv
 
+
 def read_lsdvd(root, fname):
     print("lsdvd data:", fname)
     if exists(fname):
@@ -23,12 +24,18 @@ def read_lsdvd(root, fname):
         open(fname, "wb").write(data)
     return data
 
+
 def read_makemkv(root, fname):
     print("makemkv data:", fname, root)
     if exists(fname):
         data = open(fname).read()
     else:
-        cmd = ["makemkvcon", "-r", "info", "disc:0"] # FIXME: Ignores root and I can't seem to make it not...
+        cmd = [
+            "makemkvcon",
+            "-r",
+            "info",
+            "disc:0",
+        ]  # FIXME: Ignores root and I can't seem to make it not...
         print(" ".join(cmd))
         try:
             data = subprocess.check_output(cmd)
@@ -49,15 +56,15 @@ def parse_lsdvd(data):
 
     for track in xml.getElementsByTagName("track"):
         id = None
-        #print [x.nodeName for x in track.childNodes]
+        # print [x.nodeName for x in track.childNodes]
         for child in track.childNodes:
             if child.nodeName == "ix":
-                assert id == None,id
+                assert id == None, id
                 id = int(child.firstChild.data)
             elif child.nodeName == "length":
                 assert id != None
                 length = float(child.firstChild.data)
-                tracks[id] = {"length": length/60.0, "id": id}
+                tracks[id] = {"length": length / 60.0, "id": id}
             elif child.nodeName == "subp":
                 assert id in tracks
                 element = child.getElementsByTagName("langcode")[0]
@@ -65,16 +72,18 @@ def parse_lsdvd(data):
                     if "subp" not in tracks[id]:
                         tracks[id]["subp"] = {}
                     if element.firstChild.data == "xx":
-                        #open(fname, "wb").write("")
+                        # open(fname, "wb").write("")
                         continue
                         raise Exception(id, tracks[id], child.toxml())
-                    tracks[id]["subp"][element.firstChild.data] = child.getElementsByTagName("ix")[0].firstChild.data
+                    tracks[id]["subp"][
+                        element.firstChild.data
+                    ] = child.getElementsByTagName("ix")[0].firstChild.data
             elif child.nodeName == "audio":
                 assert id in tracks
                 if "audio" not in tracks[id]:
                     tracks[id]["audio"] = {}
                 element = langcode = child.getElementsByTagName("langcode")[0]
-                #print element.toxml()
+                # print element.toxml()
                 if element.firstChild != None:
                     langcode = element.firstChild.data
                     if langcode not in tracks[id]["audio"]:
@@ -88,10 +97,11 @@ def parse_lsdvd(data):
                 tracks[id]["chapters"][ix] = float(length) / 60.0
 
             else:
-                #print "node", child.nodeName
+                # print "node", child.nodeName
                 pass
 
     return tracks, sorted(tracks.keys())
+
 
 def parse_makemkv(data):
     tracks = {}
@@ -102,7 +112,7 @@ def parse_makemkv(data):
         try:
             code, rest = line.split(":", 1)
         except ValueError:
-            raise Exception("'%s'"%line)
+            raise Exception("'%s'" % line)
         if code in ["MSG", "DRV", "TCOUNT", "CINFO"]:
             continue
         items = list(csv.reader([rest]))[0]
@@ -114,13 +124,13 @@ def parse_makemkv(data):
             data = items[3]
             if kind == 9:
                 (h, m, s) = [int(x) for x in data.split(":")]
-                length = (h*60) + m
+                length = (h * 60) + m
                 tracks[id]["length"] = length
             elif kind == 27:
                 tracks[id]["track_path"] = data
             elif kind == 2:
                 tracks[id]["name"] = data
-            elif kind in [8,10,11,15,16,25,26,28,29,30,31,33,49]:
+            elif kind in [8, 10, 11, 15, 16, 25, 26, 28, 29, 30, 31, 33, 49]:
                 pass
             else:
                 print(items)
@@ -129,26 +139,26 @@ def parse_makemkv(data):
             kind = int(items[2])
             if kind == 1:
                 subkind = int(items[3])
-                if subkind in [6201, 6202, 6203]: # Video, Audio, Subtitles
+                if subkind in [6201, 6202, 6203]:  # Video, Audio, Subtitles
                     pass
                 else:
                     print(items)
                     raise Exception(subkind)
-            elif kind in [5,6,7,19,20,21,22,29,30,21,33,38]:
+            elif kind in [5, 6, 7, 19, 20, 21, 22, 29, 30, 21, 33, 38]:
                 pass
-            elif kind == 3: # identifier
+            elif kind == 3:  # identifier
                 lang = items[4]
-                if subkind == 6201: # video
+                if subkind == 6201:  # video
                     pass
-                elif subkind == 6202: # audio
+                elif subkind == 6202:  # audio
                     lang = items[4]
                     if lang not in tracks[id]["audio"]:
                         tracks[id]["audio"][lang] = []
                     tracks[id]["audio"][lang].append(int(items[1]))
-                elif subkind == 6203: # subtitles
+                elif subkind == 6203:  # subtitles
                     if lang not in tracks[id]["subp"]:
                         tracks[id]["subp"][lang] = []
-                    tracks[id]["subp"][lang].append(int(items[1]))      
+                    tracks[id]["subp"][lang].append(int(items[1]))
                 else:
                     print(items)
                     raise Exception(kind, subkind)
@@ -156,6 +166,7 @@ def parse_makemkv(data):
             print(items)
             raise Exception(code)
     return tracks, sorted(tracks.keys())
+
 
 def decide_files(fname):
     data = open(fname).read()
@@ -173,38 +184,60 @@ def decide_files(fname):
         trackmap = json.loads(open(fname + ".trackmap").read())
         print("trackmap", trackmap)
         for k, entry in enumerate(trackmap):
-            fname = "%s-%d-t%d-s%d-e%d.mkv"%(base, k, entry["track"], entry["startChapter"], entry["endChapter"])
-            yield {"number":k, "fname":fname, "track": tracks[entry["track"]], "startChapter":entry["startChapter"], "endChapter":entry["endChapter"]}
+            fname = "%s-%d-t%d-s%d-e%d.mkv" % (
+                base,
+                k,
+                entry["track"],
+                entry["startChapter"],
+                entry["endChapter"],
+            )
+            yield {
+                "number": k,
+                "fname": fname,
+                "track": tracks[entry["track"]],
+                "startChapter": entry["startChapter"],
+                "endChapter": entry["endChapter"],
+            }
         return
 
     if len(tracks) == 99:
         print("Protected with RipGuard, need a .trackmap")
         raise Exception
 
-    episodeValues = dict((k,v) for (k,v) in tracks.items() if v["length"] > 25 and v["length"] < 87)
+    episodeValues = dict(
+        (k, v) for (k, v) in tracks.items() if v["length"] > 25 and v["length"] < 87
+    )
     episodes = len(episodeValues)
-    movieValues = dict((k,v) for (k,v) in tracks.items() if v["length"] > 65 and v["length"] < 200)
+    movieValues = dict(
+        (k, v) for (k, v) in tracks.items() if v["length"] > 65 and v["length"] < 200
+    )
     movies = len(movieValues)
-    print("e,m", episodes, movies, [(k,v["length"]) for (k,v) in tracks.items()])
+    print("e,m", episodes, movies, [(k, v["length"]) for (k, v) in tracks.items()])
 
-    if episodes > 20: # too many!
+    if episodes > 20:  # too many!
         print("Too many!", movies, episodes)
         print(tracks)
         raise Exception
 
     totalEpisodeLength = sum([x["length"] for x in list(episodeValues.values())])
-    movieLength = movieValues[list(movieValues.keys())[0]]["length"] if movies > 0 else 0
+    movieLength = (
+        movieValues[list(movieValues.keys())[0]]["length"] if movies > 0 else 0
+    )
     print("Total lengths", totalEpisodeLength, movieLength)
 
     if episodes > movies and totalEpisodeLength > 110:
-        print("TV series", len(episodeValues), [(k,v["length"]) for (k,v) in episodeValues.items()])
+        print(
+            "TV series",
+            len(episodeValues),
+            [(k, v["length"]) for (k, v) in episodeValues.items()],
+        )
         episodeValues = list(episodeValues.keys())
 
         for k in order:
             if k not in episodeValues:
                 continue
-            fname = "%s-%d.mkv"%(base, k)
-            yield {"number":k, "fname":fname, "track":tracks[k]}
+            fname = "%s-%d.mkv" % (base, k)
+            yield {"number": k, "fname": fname, "track": tracks[k]}
 
     elif movies >= 1:
         if movies != 1:
@@ -214,20 +247,22 @@ def decide_files(fname):
         if "name" in tracks[k]:
             fname = "%s.mkv" % tracks[k]["name"]
         else:
-            fname = "%s.mkv"%base
-        yield {"number":k, "fname":fname, "track":tracks[k]}
+            fname = "%s.mkv" % base
+        yield {"number": k, "fname": fname, "track": tracks[k]}
 
     else:
         print("Something else!", movies, episodes)
         print(movieValues, episodeValues)
 
         for k in order:
-            fname = "%s-%d.mkv"%(base, k)
-            yield {"number":k, "fname":fname, "track":tracks[k]}
+            fname = "%s-%d.mkv" % (base, k)
+            yield {"number": k, "fname": fname, "track": tracks[k]}
+
 
 def is_bluray(root):
     st = os.stat(root)
     return stat.S_ISBLK(st.st_mode)
+
 
 def get_idname(root):
     if exists(join(root, "VIDEO_TS")):
@@ -238,15 +273,18 @@ def get_idname(root):
     else:
         raise Exception(os.listdir(root))
 
+
 def read_disk(root):
     idname = get_idname(root)
     read_idname(idname)
+
 
 def strip_entry(m):
     m["track"] = m["track"]["id"]
     del m["fname"]
     del m["number"]
     return m
+
 
 def read_idname(idname):
     fname = "tracks/" + idname
@@ -261,6 +299,7 @@ def read_idname(idname):
     print(tracks)
     open(fname + ".tracks", "w").write(dumps(list([strip_entry(x) for x in tracks])))
 
+
 def check_disks():
     ret = True
     for fname in os.listdir("tracks"):
@@ -270,7 +309,10 @@ def check_disks():
             continue
         if fname.endswith(".tracks"):
             wanted_tracks = loads(open("tracks/" + fname).read())
-            gotten_tracks = [strip_entry(x) for x in decide_files("tracks/" + fname.replace(".tracks", ""))]
+            gotten_tracks = [
+                strip_entry(x)
+                for x in decide_files("tracks/" + fname.replace(".tracks", ""))
+            ]
             if wanted_tracks == gotten_tracks:
                 print(fname, "is ok", wanted_tracks)
             else:
@@ -284,8 +326,9 @@ def check_disks():
             read_idname(fname)
     return ret
 
+
 if __name__ == "__main__":
-    if len(argv)>1:
+    if len(argv) > 1:
         read_disk(argv[1])
     else:
         ret = check_disks()

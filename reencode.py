@@ -14,18 +14,21 @@ parser.add_option("--chapter", dest="byChapter", default=False, action="store_tr
 parser.add_option("--uuid", dest="uuid", default=None)
 (opts, folders) = parser.parse_args()
 
+
 def handbrakeList(root, fname):
     titlePattern = re.compile("\+ title (\d+):")
     durationPattern = re.compile("\+ duration: (\d+):(\d+):(\d+)")
-    chapterPattern = re.compile("\+ (\d+): cells \d+->\d+, \d+ blocks, duration (\d+):(\d+):(\d+)")
+    chapterPattern = re.compile(
+        "\+ (\d+): cells \d+->\d+, \d+ blocks, duration (\d+):(\d+):(\d+)"
+    )
 
     tracks = {}
     order = []
     for line in open(fname).readlines():
         value = int(line)
         order.append(value)
-        cmd = "HandBrakeCLI --scan -i '%s' --title %d"%(root, value)
-        p = Popen(cmd, shell=True, stdout = PIPE, stderr = PIPE)
+        cmd = "HandBrakeCLI --scan -i '%s' --title %d" % (root, value)
+        p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
         data = p.stderr.read()
         data = str(data, errors="ignore")
         open("dump", "wb").write(data)
@@ -36,15 +39,18 @@ def handbrakeList(root, fname):
             raise Exception(title.groups(), value)
         duration = durationPattern.search(data)
         duration = [int(x) for x in duration.groups()]
-        duration = (duration[0]*60)+duration[1]+(duration[2]/60.0)
+        duration = (duration[0] * 60) + duration[1] + (duration[2] / 60.0)
         tracks[value] = {"length": duration}
         chapters = {}
         for chapter in chapterPattern.findall(data):
             chapter = [int(x) for x in chapter]
-            chapters[int(chapter[0])] = (chapter[1]*60)+chapter[2]+(chapter[3]/60.0)
+            chapters[int(chapter[0])] = (
+                (chapter[1] * 60) + chapter[2] + (chapter[3] / 60.0)
+            )
         tracks[value]["chapters"] = chapters
 
     return tracks, order
+
 
 def check_file(fname, expected_length):
     cmd = ["mplayer", "-vo", "null", "-frames", "0", "-identify", fname]
@@ -52,8 +58,8 @@ def check_file(fname, expected_length):
     mplayer = check_output(cmd)
     values = {}
     for l in mplayer.split("\n"):
-        if l.find("=")!=-1 and l.find(" ")==-1 and l.find("==")==-1:
-            key,value = l.split("=",1)
+        if l.find("=") != -1 and l.find(" ") == -1 and l.find("==") == -1:
+            key, value = l.split("=", 1)
             values[key] = value.strip()
     try:
         length = float(values["ID_LENGTH"])
@@ -61,9 +67,13 @@ def check_file(fname, expected_length):
         print(mplayer)
         print(values)
         raise
-    diff = abs((length/60.0)-expected_length)
+    diff = abs((length / 60.0) - expected_length)
     if diff > 1:
-        raise Exception("Missing %f minutes. Expected %f and got %f" %(diff, expected_length, length/60.0))
+        raise Exception(
+            "Missing %f minutes. Expected %f and got %f"
+            % (diff, expected_length, length / 60.0)
+        )
+
 
 def reencode(root):
     if opts.uuid == None:
@@ -77,11 +87,13 @@ def reencode(root):
         read_lsdvd(root, fname)
     items = list(decide_files(fname))
     print("items", items)
-    #raise Exception
+    # raise Exception
 
     for data in items:
         print("data", data)
-        fname = data["fname"].replace("/","").replace("'", "\\'").replace(":", " -")
+        fname = "output/" + (
+            data["fname"].replace("/", "").replace("'", "\\'").replace(":", " -")
+        )
         if not exists(fname):
             data["fname"] = fname
             if is_bluray(root):
@@ -90,26 +102,30 @@ def reencode(root):
                 dvd_encode(root, data)
         check_file(fname, data["track"]["length"])
 
+
 def dvd_encode(root, data):
-    fname = data["fname"].replace("/","")
-    cmd = "HandBrakeCLI -e x264 -q 19 -a 1 -E lame -B 128 -6 dpl2 -R Auto -D 0.0 -X 720 --loose-anamorphic -i %s --denoise weak --decomb --title %d -o %s --no-dvdnav"%(root, data["track"]["id"], fname)
+    cmd = (
+        "HandBrakeCLI -e x264 -q 19 -a 1 -E lame -B 128 -6 dpl2 -R Auto -D 0.0 -X 720 --loose-anamorphic -i %s --denoise weak --decomb --title %d -o %s --no-dvdnav"
+        % (root, data["track"]["id"], data["fname"])
+    )
     info = data["track"]
     if "subp" in info and "audio" in info and "ja" in info["audio"]:
         print("anime")
-        cmd += " -a %s -s %s"%(info["audio"]["ja"], info["subp"]["en"])
+        cmd += " -a %s -s %s" % (info["audio"]["ja"], info["subp"]["en"])
     elif "subp" in info and "en" in info["subp"]:
         if "audio" in info and "en" in info["audio"]:
             print("subtitles (en only)")
-            cmd += " --subtitle %s"%(info["subp"]["en"])
+            cmd += " --subtitle %s" % (info["subp"]["en"])
         else:
             print("subtitles (foreign only)")
-            cmd += " --subtitle scan --subtitle-forced %s"%(info["subp"]["en"])
+            cmd += " --subtitle scan --subtitle-forced %s" % (info["subp"]["en"])
         raise Exception(cmd)
     if "startChapter" in data:
-        cmd += " -c %d-%d"%(data["startChapter"], data["endChapter"])
+        cmd += " -c %d-%d" % (data["startChapter"], data["endChapter"])
     print(cmd)
     cmd = cmd.split(" ")
     check_output(cmd)
+
 
 def bluray_encode(root, data):
     track_id = int(data["track"]["id"])
@@ -123,19 +139,22 @@ def bluray_encode(root, data):
         result = system(cmd)
         if result != 0:
             raise Exception
-    fname = data["fname"]
     track_path = shellescape.quote(track_path)
     info = data["track"]
-    cmd = "HandBrakeCLI -e x264 --two-pass --quality 23 --audio %s -E lame -B 192 -R Auto -X 1920 --loose-anamorphic -i %s --denoise weak --decomb -o \"%s\" --subtitle-lang-list eng --all-subtitles"%(",".join([str(x) for x in info["audio"]["eng"]]), track_path, fname)
+    cmd = (
+        'HandBrakeCLI -e x264 --two-pass --quality 23 --audio %s -E lame -B 192 -R Auto -X 1920 --loose-anamorphic -i %s --denoise weak --decomb -o "%s" --subtitle-lang-list eng --all-subtitles'
+        % (",".join([str(x) for x in info["audio"]["eng"]]), track_path, data["fname"])
+    )
     if "subp" in info and "audio" in info and "ja" in info["audio"]:
         print("anime")
-        cmd += " -a %s -s %s"%(info["audio"]["ja"], info["subp"]["eng"])
+        cmd += " -a %s -s %s" % (info["audio"]["ja"], info["subp"]["eng"])
         raise Exception
     print(cmd)
-    #raise Exception
+    # raise Exception
     result = system(cmd)
     if result != 0:
         raise Exception
+
 
 if len(folders) == 0:
     for root, dirs, files in walk(".", topdown=False):

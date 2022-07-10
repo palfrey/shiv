@@ -5,12 +5,12 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """This is a tool to submit ISRCs from a disc to MusicBrainz.
@@ -26,8 +26,7 @@ AGENT_NAME = "isrcsubmit.py"
 DEFAULT_SERVER = "musicbrainz.org"
 # starting with highest priority
 BACKENDS = ["mediatools", "media_info", "cdrdao", "libdiscid", "discisrc"]
-BROWSERS = ["xdg-open", "x-www-browser",
-            "firefox", "chromium", "chrome", "opera"]
+BROWSERS = ["xdg-open", "x-www-browser", "firefox", "chromium", "chrome", "opera"]
 # The webbrowser module is used when nothing is found in this list.
 # This especially happens on Windows and Mac OS X (browser mostly not in PATH)
 
@@ -92,13 +91,15 @@ options = None
 ws2 = None
 logger = logging.getLogger("isrcsubmit")
 
+
 def script_version():
     return "isrcsubmit %s by JonnyJD for MusicBrainz" % __version__
 
+
 def print_help(option=None, opt=None, value=None, parser=None):
     print("%s" % script_version())
-    print(\
-"""
+    print(
+        """
 This python script extracts ISRCs from audio cds and submits them to MusicBrainz (musicbrainz.org).
 You need to have a MusicBrainz account, specify the username and will be asked for your password every time you execute the script.
 
@@ -106,16 +107,21 @@ Isrcsubmit will warn you if there are any problems and won't actually submit any
 
 Isrcsubmit will warn you if any duplicate ISRCs are detected and help you fix priviously inserted duplicate ISRCs.
 The ISRC-track relationship we found on our disc is taken as our correct evaluation.
-""")
+"""
+    )
     parser.print_usage()
-    print("""\
-Please report bugs on https://github.com/JonnyJD/musicbrainz-isrcsubmit""")
+    print(
+        """\
+Please report bugs on https://github.com/JonnyJD/musicbrainz-isrcsubmit"""
+    )
     sys.exit(0)
+
 
 def print_usage(option=None, opt=None, value=None, parser=None):
     print("%s\n" % script_version())
     parser.print_help()
     sys.exit(0)
+
 
 class Isrc(object):
     def __init__(self, isrc, track=None):
@@ -144,12 +150,13 @@ class Track(dict):
     This makes it easy to check if this track is already in a collection.
     Only the element already in the collection needs to be hashable.
     """
+
     def __init__(self, track, number=None):
         self._track = track
         self._recording = track["recording"]
         self._number = number
         # check that we found the track with the correct number
-        assert(int(self._track["position"]) == self._number)
+        assert int(self._track["position"]) == self._number
 
     def __eq__(self, other):
         return self["id"] == other["id"]
@@ -166,9 +173,12 @@ class Track(dict):
         except KeyError:
             return self._track.get(item, default)
 
+
 class OwnTrack(Track):
     """A track found on an analyzed (own) disc"""
+
     pass
+
 
 def get_config_home():
     """Returns the base directory for isrcsubmit's configuration files."""
@@ -181,10 +191,12 @@ def get_config_home():
     xdg_config_home = os.environ.get("XDG_CONFIG_HOME", default_location)
     return os.path.join(xdg_config_home, "isrcsubmit")
 
+
 def config_path():
     """Returns isrsubmit's config file location."""
 
     return os.path.join(get_config_home(), "config")
+
 
 def gather_options(argv):
     global options
@@ -202,39 +214,78 @@ def gather_options(argv):
 
     parser = OptionParser(version=script_version(), add_help_option=False)
     parser.set_usage(
-            "{prog} [options] [user] [device]\n       {prog} -h".format(
-            prog=SCRIPTNAME))
-    parser.add_option("-h", action="callback", callback=print_usage,
-            help="Short usage help")
-    parser.add_option("--help", action="callback", callback=print_help,
-            help="Complete help for the script")
-    parser.add_option("-u", "--user", metavar="USERNAME",
-            help="MusicBrainz username, if not given as argument.")
+        "{prog} [options] [user] [device]\n       {prog} -h".format(prog=SCRIPTNAME)
+    )
+    parser.add_option(
+        "-h", action="callback", callback=print_usage, help="Short usage help"
+    )
+    parser.add_option(
+        "--help",
+        action="callback",
+        callback=print_help,
+        help="Complete help for the script",
+    )
+    parser.add_option(
+        "-u",
+        "--user",
+        metavar="USERNAME",
+        help="MusicBrainz username, if not given as argument.",
+    )
     # note that -d previously stand for debug
-    parser.add_option("-d", "--device", metavar="DEVICE",
-            help="CD device with a loaded audio cd, if not given as argument."
-            + " The default is %s." % default_device)
-    parser.add_option("--release-id", metavar="RELEASE_ID",
-            help="Optional MusicBrainz ID of the release."
-            + " This will be gathered if not given.")
-    parser.add_option("-b", "--backend", choices=BACKENDS, metavar="PROGRAM",
-            help="Force using a specific backend to extract ISRCs from the"
-            + " disc. Possible backends are: %s." % ", ".join(BACKENDS)
-            + " They are tried in this order otherwise.")
-    parser.add_option("--browser", metavar="BROWSER",
-            help="Program to open URLs. This will be automatically detected"
-            " for most setups, if not chosen manually.")
-    parser.add_option("--force-submit", action="store_true", default=False,
-            help="Always open TOC/disc ID in browser.")
-    parser.add_option("--server", metavar="SERVER",
-            help="Server to send ISRCs to. Default: %s" % DEFAULT_SERVER)
-    parser.add_option("--debug", action="store_true", default=False,
-            help="Show debug messages."
-            + " Currently shows some backend messages.")
-    parser.add_option("--keyring", action="store_true", dest="keyring",
-            help="Use keyring if available.")
-    parser.add_option("--no-keyring", action="store_false", dest="keyring",
-            help="Disable keyring.")
+    parser.add_option(
+        "-d",
+        "--device",
+        metavar="DEVICE",
+        help="CD device with a loaded audio cd, if not given as argument."
+        + " The default is %s." % default_device,
+    )
+    parser.add_option(
+        "--release-id",
+        metavar="RELEASE_ID",
+        help="Optional MusicBrainz ID of the release."
+        + " This will be gathered if not given.",
+    )
+    parser.add_option(
+        "-b",
+        "--backend",
+        choices=BACKENDS,
+        metavar="PROGRAM",
+        help="Force using a specific backend to extract ISRCs from the"
+        + " disc. Possible backends are: %s." % ", ".join(BACKENDS)
+        + " They are tried in this order otherwise.",
+    )
+    parser.add_option(
+        "--browser",
+        metavar="BROWSER",
+        help="Program to open URLs. This will be automatically detected"
+        " for most setups, if not chosen manually.",
+    )
+    parser.add_option(
+        "--force-submit",
+        action="store_true",
+        default=False,
+        help="Always open TOC/disc ID in browser.",
+    )
+    parser.add_option(
+        "--server",
+        metavar="SERVER",
+        help="Server to send ISRCs to. Default: %s" % DEFAULT_SERVER,
+    )
+    parser.add_option(
+        "--debug",
+        action="store_true",
+        default=False,
+        help="Show debug messages." + " Currently shows some backend messages.",
+    )
+    parser.add_option(
+        "--keyring",
+        action="store_true",
+        dest="keyring",
+        help="Use keyring if available.",
+    )
+    parser.add_option(
+        "--no-keyring", action="store_false", dest="keyring", help="Disable keyring."
+    )
     (options, args) = parser.parse_args(argv[1:])
 
     print("%s" % script_version())
@@ -256,8 +307,10 @@ def gather_options(argv):
     if options.backend is None and config.has_option("general", "backend"):
         options.backend = config.get("general", "backend")
         if options.backend not in BACKENDS:
-            print_error("Backend given in config file is not a valid choice.",
-                        "Choose a backend from %s" % ", ".join(BACKENDS))
+            print_error(
+                "Backend given in config file is not a valid choice.",
+                "Choose a backend from %s" % ", ".join(BACKENDS),
+            )
             sys.exit(-1)
     if options.browser is None and config.has_option("general", "browser"):
         options.browser = config.get("general", "browser")
@@ -279,8 +332,10 @@ def gather_options(argv):
     if options.keyring is None:
         options.keyring = True
     if options.backend and not has_program(options.backend, strict=True):
-        print_error("Chosen backend not found. No ISRC extraction possible!",
-                    "Make sure that %s is installed." % options.backend)
+        print_error(
+            "Chosen backend not found. No ISRC extraction possible!",
+            "Make sure that %s is installed." % options.backend,
+        )
         sys.exit(-1)
     elif not options.backend:
         options.backend = find_backend()
@@ -296,19 +351,18 @@ def test_which():
     with open(os.devnull, "w") as devnull:
         try:
             # "which" should at least find itself
-            return_code = call(["which", "which"],
-                               stdout=devnull, stderr=devnull)
+            return_code = call(["which", "which"], stdout=devnull, stderr=devnull)
         except OSError:
-            return False        # no which at all
+            return False  # no which at all
         else:
-            if (return_code == 0):
+            if return_code == 0:
                 return True
             else:
-                print('warning: your version of the tool "which"'
-                      ' is buggy/outdated')
+                print('warning: your version of the tool "which"' " is buggy/outdated")
                 if os.name == "nt":
-                    print('         unxutils is old/broken, GnuWin32 is good.')
+                    print("         unxutils is old/broken, GnuWin32 is good.")
                 return False
+
 
 def get_prog_version(prog):
     if prog == "libdiscid":
@@ -321,9 +375,10 @@ def get_prog_version(prog):
 
     return decode(version)
 
+
 def has_program(program, strict=False):
     """When the backend is only a symlink to another backend,
-       we will return False, unless we strictly want to use this backend.
+    we will return False, unless we strictly want to use this backend.
     """
     if program == "libdiscid":
         return "isrc" in discid.FEATURES
@@ -336,13 +391,15 @@ def has_program(program, strict=False):
                 # check if it is only a symlink to another backend
                 real_program = os.path.basename(os.path.realpath(program_path))
                 if program != real_program and (
-                        real_program in BACKENDS or real_program in BROWSERS):
+                    real_program in BACKENDS or real_program in BROWSERS
+                ):
                     if strict:
-                        print("WARNING: %s is a symlink to %s"
-                              % (program, real_program))
+                        print(
+                            "WARNING: %s is a symlink to %s" % (program, real_program)
+                        )
                         return True
                     else:
-                        return False # use real program (target) instead
+                        return False  # use real program (target) instead
                 return True
             else:
                 return False
@@ -357,9 +414,9 @@ def has_program(program, strict=False):
         else:
             return False
 
+
 def find_backend():
-    """search for an available backend
-    """
+    """search for an available backend"""
     backend = None
     for prog in BACKENDS:
         if has_program(prog):
@@ -367,16 +424,18 @@ def find_backend():
             break
 
     if backend is None:
-        print_error("Cannot find a backend to extract the ISRCS!",
-                    "Isrcsubmit can work with one of the following:",
-                    "  " + ", ".join(BACKENDS))
+        print_error(
+            "Cannot find a backend to extract the ISRCS!",
+            "Isrcsubmit can work with one of the following:",
+            "  " + ", ".join(BACKENDS),
+        )
         sys.exit(-1)
 
     return backend
 
+
 def find_browser():
-    """search for an available browser
-    """
+    """search for an available browser"""
     for browser in BROWSERS:
         if has_program(browser):
             return browser
@@ -384,9 +443,9 @@ def find_browser():
     # This will use the webbrowser module to find a default
     return None
 
+
 def open_browser(url, exit=False, submit=False):
-    """open url in the selected browser, default if none
-    """
+    """open url in the selected browser, default if none"""
     if options.browser:
         if exit:
             try:
@@ -397,8 +456,9 @@ def open_browser(url, exit=False, submit=False):
                     # linux/unix works fine with spaces
                     os.execlp(options.browser, options.browser, url)
             except OSError as err:
-                error = ["Couldn't open the url in %s: %s"
-                         % (options.browser, str(err))]
+                error = [
+                    "Couldn't open the url in %s: %s" % (options.browser, str(err))
+                ]
                 if submit:
                     error.append("Please submit via: %s" % url)
                 print_error(*error)
@@ -411,8 +471,9 @@ def open_browser(url, exit=False, submit=False):
                     with open(os.devnull, "w") as devnull:
                         Popen([options.browser, url], stdout=devnull)
             except OSError as err:
-                error = ["Couldn't open the url in %s: %s"
-                            % (options.browser, str(err))]
+                error = [
+                    "Couldn't open the url in %s: %s" % (options.browser, str(err))
+                ]
                 if submit:
                     error.append("Please submit via: %s" % url)
                 print_error(*error)
@@ -431,6 +492,7 @@ def open_browser(url, exit=False, submit=False):
         if exit:
             sys.exit(1)
 
+
 def get_real_mac_device(option_device):
     """drutil takes numbers as drives.
 
@@ -441,51 +503,53 @@ def get_real_mac_device(option_device):
     try:
         given = proc.communicate()[0].splitlines()[3].split("Name:")[1].strip()
     except IndexError:
-        print_error("could not find real device",
-                     "maybe there is no disc in the drive?")
+        print_error(
+            "could not find real device", "maybe there is no disc in the drive?"
+        )
         sys.exit(-1)
     # libdiscid needs the "raw" version
     return given.replace("/disk", "/rdisk")
 
+
 def cp65001(name):
-    """This might be buggy, but better than just a LookupError
-    """
+    """This might be buggy, but better than just a LookupError"""
     if name.lower() == "cp65001":
         return codecs.lookup("utf-8")
 
+
 codecs.register(cp65001)
 
+
 def printf(format_string, *args):
-    """Print with the % and without additional spaces or newlines
-    """
+    """Print with the % and without additional spaces or newlines"""
     if not args:
         # make it convenient to use without args -> different to C
-        args = (format_string, )
+        args = (format_string,)
         format_string = "%s"
     sys.stdout.write(format_string % args)
 
+
 def decode(msg):
-    """This will replace unsuitable characters and use stdin encoding
-    """
+    """This will replace unsuitable characters and use stdin encoding"""
     if isinstance(msg, bytes):
         return msg.decode(sys.stdin.encoding, "replace")
     else:
         return unicode_string(msg)
 
+
 def encode(msg):
-    """This will replace unsuitable characters and use stdout encoding
-    """
+    """This will replace unsuitable characters and use stdout encoding"""
     if isinstance(msg, unicode_string):
         return msg.encode(sys.stdout.encoding, "replace")
     else:
         return bytes(msg)
 
+
 def print_encoded(*args):
-    """This will replace unsuitable characters and doesn't append a newline
-    """
+    """This will replace unsuitable characters and doesn't append a newline"""
     stringArgs = ()
     for arg in args:
-        stringArgs += encode(arg),
+        stringArgs += (encode(arg),)
     msg = b" ".join(stringArgs)
     if not msg.endswith(b"\n"):
         msg += b" "
@@ -496,6 +560,7 @@ def print_encoded(*args):
             sys.stdout.buffer.write(msg)
         except AttributeError:
             sys.stdout.write(msg)
+
 
 def print_release(release, position=None):
     """Print information about a release.
@@ -519,8 +584,7 @@ def print_release(release, position=None):
         print_encoded("Release:\t%s" % release["title"])
     else:
         print_encoded("%#2d:" % position)
-        print_encoded("%s - %s" % (
-                      release["artist-credit-phrase"], release["title"]))
+        print_encoded("%s - %s" % (release["artist-credit-phrase"], release["title"]))
     if release.get("status"):
         print("(%s)" % release["status"])
     else:
@@ -531,8 +595,8 @@ def print_release(release, position=None):
         print_encoded("Catalog No.:\t%s\n" % catnumbers)
         print_encoded("MusicBrainz ID:\t%s\n" % release["id"])
     else:
-        print_encoded("\t%s\t%s\t%s\t%s\n" % (
-                      country, date, barcode, catnumbers))
+        print_encoded("\t%s\t%s\t%s\t%s\n" % (country, date, barcode, catnumbers))
+
 
 def print_error(*args):
     string_args = tuple([str(arg) for arg in args])
@@ -540,9 +604,12 @@ def print_error(*args):
 
 
 def backend_error(err):
-    print_error("Couldn't gather ISRCs with %s: %i - %s"
-                % (options.backend, err.errno, err.strerror))
+    print_error(
+        "Couldn't gather ISRCs with %s: %i - %s"
+        % (options.backend, err.errno, err.strerror)
+    )
     sys.exit(1)
+
 
 def ask_for_submission(url, print_url=False):
     if options.force_submit:
@@ -557,7 +624,8 @@ def ask_for_submission(url, print_url=False):
         print("Please submit the Disc ID with this url:")
         print(url)
 
-class WebService2():
+
+class WebService2:
     """A web service wrapper that asks for a password when first needed.
 
     This uses musicbrainzngs as a wrapper itself.
@@ -568,12 +636,12 @@ class WebService2():
         self.keyring_failed = False
         self.username = username
         musicbrainzngs.set_hostname(options.server)
-        musicbrainzngs.set_useragent(AGENT_NAME, __version__,
-                "http://github.com/JonnyJD/musicbrainz-isrcsubmit")
+        musicbrainzngs.set_useragent(
+            AGENT_NAME, __version__, "http://github.com/JonnyJD/musicbrainz-isrcsubmit"
+        )
 
     def authenticate(self):
-        """Sets the password if not set already
-        """
+        """Sets the password if not set already"""
         if not self.auth:
             print("")
             if self.username is None:
@@ -586,8 +654,7 @@ class WebService2():
             if keyring is not None and options.keyring and not self.keyring_failed:
                 password = keyring.get_password(options.server, self.username)
             if password is None:
-                password = getpass.getpass(
-                                    "Please input your MusicBrainz password: ")
+                password = getpass.getpass("Please input your MusicBrainz password: ")
             print("")
             musicbrainzngs.auth(self.username, password)
             self.auth = True
@@ -597,8 +664,7 @@ class WebService2():
 
     def get_releases_by_discid(self, disc_id, includes=[]):
         try:
-            response = musicbrainzngs.get_releases_by_discid(disc_id,
-                                                             includes=includes)
+            response = musicbrainzngs.get_releases_by_discid(disc_id, includes=includes)
         except ResponseError as err:
             if err.cause.code == 404:
                 return []
@@ -616,8 +682,7 @@ class WebService2():
 
     def get_release_by_id(self, release_id, includes=[]):
         try:
-            return musicbrainzngs.get_release_by_id(release_id,
-                                                    includes=includes)
+            return musicbrainzngs.get_release_by_id(release_id, includes=includes)
         except WebServiceError as err:
             print_error("Couldn't fetch release: %s" % err)
             sys.exit(1)
@@ -642,7 +707,6 @@ class WebService2():
                 break
 
 
-
 class Disc(object):
     def read_disc(self):
         try:
@@ -659,8 +723,9 @@ class Disc(object):
     def __init__(self, device, backend, verified=False):
         if sys.platform == "darwin":
             self._device = get_real_mac_device(device)
-            logger.info("CD drive #%s corresponds to %s internally",
-                        device, self._device)
+            logger.info(
+                "CD drive #%s corresponds to %s internally", device, self._device
+            )
         else:
             self._device = device
         self._disc = None
@@ -668,9 +733,14 @@ class Disc(object):
         self._backend = backend
         self._verified = verified
         self._asked_for_submission = False
-        self._common_includes=["artists", "labels", "recordings", "isrcs",
-                               "artist-credits"] # the last one only for cleanup
-        self.read_disc()        # sets self._disc
+        self._common_includes = [
+            "artists",
+            "labels",
+            "recordings",
+            "isrcs",
+            "artist-credits",
+        ]  # the last one only for cleanup
+        self.read_disc()  # sets self._disc
 
     @property
     def id(self):
@@ -711,8 +781,7 @@ class Disc(object):
         return self._release
 
     def fetch_release(self, release_id):
-        """Check if a pre-selected release has the correct TOC attached
-        """
+        """Check if a pre-selected release has the correct TOC attached"""
         includes = self._common_includes + ["discids"]
         result = ws2.get_release_by_id(release_id, includes=includes)
         release = result["release"]
@@ -746,8 +815,7 @@ class Disc(object):
                 # printed list is 1..n, not 0..n-1 !
                 print_release(release, i + 1)
             try:
-                num =  user_input("Which one do you want? [0-%d] "
-                                  % num_results)
+                num = user_input("Which one do you want? [0-%d] " % num_results)
                 if int(num) not in range(0, num_results + 1):
                     raise IndexError
                 if int(num) == 0:
@@ -766,10 +834,8 @@ class Disc(object):
 
         return selected_release
 
-
     def get_release(self, verified=False):
-        """This will get a release the ISRCs will be added to.
-        """
+        """This will get a release the ISRCs will be added to."""
 
         # check if a release was pre-selected
         if options.release_id:
@@ -780,11 +846,12 @@ class Disc(object):
         if chosen_release and chosen_release["id"] is None:
             # a "release" that is only a stub has no musicbrainz id
             print("\nThere is only a stub in the database:")
-            print_encoded("%s - %s\n\n"
-                          % (chosen_release["artist-credit-phrase"],
-                             chosen_release["title"]))
-            chosen_release = None       # don't use stub
-            verified = True             # the id is verified by the stub
+            print_encoded(
+                "%s - %s\n\n"
+                % (chosen_release["artist-credit-phrase"], chosen_release["title"])
+            )
+            chosen_release = None  # don't use stub
+            verified = True  # the id is verified by the stub
 
         if chosen_release is None or options.force_submit:
             if verified:
@@ -801,24 +868,22 @@ class Disc(object):
 
 
 def get_disc(device, backend, verified=False):
-    """This creates a Disc object, which also calculates the id of the disc
-    """
+    """This creates a Disc object, which also calculates the id of the disc"""
     disc = Disc(device, backend, verified)
-    print('\nDiscID:\t\t%s' % disc.id)
+    print("\nDiscID:\t\t%s" % disc.id)
     if disc.mcn:
-        print('MCN/EAN:\t%s' % disc.mcn)
-    print('Tracks on disc:\t%d' % len(disc.tracks))
+        print("MCN/EAN:\t%s" % disc.mcn)
+    print("Tracks on disc:\t%d" % len(disc.tracks))
     return disc
 
 
 def gather_isrcs(disc, backend, device):
-    """read the disc in the device with the backend and extract the ISRCs
-    """
+    """read the disc in the device with the backend and extract the ISRCs"""
     backend_output = []
     devnull = open(os.devnull, "w")
 
     if backend == "libdiscid":
-        pattern = r'[A-Z]{2}[A-Z0-9]{3}\d{2}\d{5}'
+        pattern = r"[A-Z]{2}[A-Z0-9]{3}\d{2}\d{5}"
         for track in disc.tracks:
             if track.isrc:
                 match = re.match(pattern, track.isrc)
@@ -829,8 +894,7 @@ def gather_isrcs(disc, backend, device):
 
     # redundant to "libdiscid", but this might be handy for prerelease testing
     elif backend == "discisrc":
-        pattern = \
-            r'Track\s+([0-9]+)\s+:\s+([A-Z]{2})-?([A-Z0-9]{3})-?(\d{2})-?(\d{5})'
+        pattern = r"Track\s+([0-9]+)\s+:\s+([A-Z]{2})-?([A-Z0-9]{3})-?(\d{2})-?(\d{5})"
         try:
             if sys.platform == "darwin":
                 device = get_real_mac_device(device)
@@ -839,24 +903,27 @@ def gather_isrcs(disc, backend, device):
         except OSError as err:
             backend_error(err)
         for line in isrcout:
-            line = decode(line) # explicitely decode from pipe
+            line = decode(line)  # explicitely decode from pipe
             ext_logger = logging.getLogger("discisrc")
-            ext_logger.debug(line.rstrip())    # rstrip newline
+            ext_logger.debug(line.rstrip())  # rstrip newline
             if line.startswith("Track") and len(line) > 12:
                 match = re.search(pattern, line)
                 if match is None:
                     print("can't find ISRC in: %s" % line)
                     continue
                 track_number = int(match.group(1))
-                isrc = ("%s%s%s%s" % (match.group(2), match.group(3),
-                                      match.group(4), match.group(5)))
+                isrc = "%s%s%s%s" % (
+                    match.group(2),
+                    match.group(3),
+                    match.group(4),
+                    match.group(5),
+                )
                 backend_output.append((track_number, isrc))
 
     # media_info is a preview version of mediatools, both are for Windows
     # this does some kind of raw read
     elif backend in ["mediatools", "media_info"]:
-        pattern = \
-            r'ISRC\s+([0-9]+)\s+([A-Z]{2})-?([A-Z0-9]{3})-?(\d{2})-?(\d{5})'
+        pattern = r"ISRC\s+([0-9]+)\s+([A-Z]{2})-?([A-Z0-9]{3})-?(\d{2})-?(\d{5})"
         if backend == "mediatools":
             args = [backend, "drive", device, "isrc"]
         else:
@@ -867,17 +934,21 @@ def gather_isrcs(disc, backend, device):
         except OSError as err:
             backend_error(err)
         for line in isrcout:
-            line = decode(line) # explicitely decode from pipe
+            line = decode(line)  # explicitely decode from pipe
             ext_logger = logging.getLogger("mediatools")
-            ext_logger.debug(line.rstrip())    # rstrip newline
+            ext_logger.debug(line.rstrip())  # rstrip newline
             if line.startswith("ISRC") and not line.startswith("ISRCS"):
                 match = re.search(pattern, line)
                 if match is None:
                     print("can't find ISRC in: %s" % line)
                     continue
                 track_number = int(match.group(1))
-                isrc = ("%s%s%s%s" % (match.group(2), match.group(3),
-                                      match.group(4), match.group(5)))
+                isrc = "%s%s%s%s" % (
+                    match.group(2),
+                    match.group(3),
+                    match.group(4),
+                    match.group(5),
+                )
                 backend_output.append((track_number, isrc))
 
     # cdrdao will create a temp file and we delete it afterwards
@@ -885,9 +956,9 @@ def gather_isrcs(disc, backend, device):
     # this will also fetch ISRCs from CD-TEXT
     elif backend == "cdrdao":
         # no byte pattern, file is opened as unicode
-        pattern = r'[A-Z]{2}[A-Z0-9]{3}\d{2}\d{5}'
+        pattern = r"[A-Z]{2}[A-Z0-9]{3}\d{2}\d{5}"
         tmpname = "cdrdao-%s.toc" % datetime.now()
-        tmpname = tmpname.replace(":", "-")     # : is invalid on windows
+        tmpname = tmpname.replace(":", "-")  # : is invalid on windows
         tmpfile = os.path.join(tempfile.gettempdir(), tmpname)
         logger.info("Saving toc in %s..", tmpfile)
         if os.name == "nt":
@@ -912,7 +983,7 @@ def gather_isrcs(disc, backend, device):
                 track_number = None
                 for line in toc:
                     ext_logger = logging.getLogger("cdrdao")
-                    ext_logger.debug(line.rstrip())    # rstrip newline
+                    ext_logger.debug(line.rstrip())  # rstrip newline
                     words = line.split()
                     if words:
                         if words[0] == "//":
@@ -936,11 +1007,11 @@ def gather_isrcs(disc, backend, device):
     devnull.close()
     return backend_output
 
+
 def check_isrcs_local(backend_output, mb_tracks):
-    """check backend_output for (local) duplicates and inconsistencies
-    """
-    isrcs = dict()          # isrcs found on disc
-    tracks2isrcs = dict()   # isrcs to be submitted
+    """check backend_output for (local) duplicates and inconsistencies"""
+    isrcs = dict()  # isrcs found on disc
+    tracks2isrcs = dict()  # isrcs to be submitted
     errors = 0
 
     for (track_number, isrc) in backend_output:
@@ -950,16 +1021,15 @@ def check_isrcs_local(backend_output, mb_tracks):
             with_isrc = [item for item in backend_output if item[1] == isrc]
             if len(with_isrc) > 1:
                 track_list = [str(item[0]) for item in with_isrc]
-                print_error("%s gave the same ISRC for multiple tracks!"
-                            % options.backend,
-                            "ISRC: %s\ttracks: %s"
-                            % (isrc, ", ".join(track_list)))
+                print_error(
+                    "%s gave the same ISRC for multiple tracks!" % options.backend,
+                    "ISRC: %s\ttracks: %s" % (isrc, ", ".join(track_list)),
+                )
                 errors += 1
         try:
             track = mb_tracks[track_number - 1]
         except IndexError:
-            print_error("ISRC %s found for unknown track %d"
-                        % (isrc, track_number))
+            print_error("ISRC %s found for unknown track %d" % (isrc, track_number))
             errors += 1
         else:
             own_track = OwnTrack(track, track_number)
@@ -969,13 +1039,12 @@ def check_isrcs_local(backend_output, mb_tracks):
                 # single isrcs work in python-musicbrainzngs 0.4, but not 0.3
                 # lists of isrcs don't work in 0.4 though, see pymbngs #113
                 tracks2isrcs[own_track["id"]] = isrc
-                print("found new ISRC for track %d: %s"
-                      % (track_number, isrc))
+                print("found new ISRC for track %d: %s" % (track_number, isrc))
             else:
-                print("%s is already attached to track %d"
-                      % (isrc, track_number))
+                print("%s is already attached to track %d" % (isrc, track_number))
 
     return isrcs, tracks2isrcs, errors
+
 
 def check_global_duplicates(release, mb_tracks, isrcs):
     """Help cleaning up global duplicates with the information we got
@@ -1003,6 +1072,7 @@ def check_global_duplicates(release, mb_tracks, isrcs):
         if choice.lower() == "y":
             cleanup_isrcs(release, isrcs)
 
+
 def cleanup_isrcs(release, isrcs):
     """Show information about duplicate ISRCs
 
@@ -1022,7 +1092,7 @@ def cleanup_isrcs(release, isrcs):
                 print_encoded(string)
                 # tab alignment
                 if len(string) >= 32:
-                    printf("\n%s",  " " * 40)
+                    printf("\n%s", " " * 40)
                 else:
                     if len(string) < 7:
                         printf("\t")
@@ -1052,7 +1122,7 @@ def main(argv):
     # preset logger
     stream_handler = logging.StreamHandler()
     stream_handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
-    logging.getLogger().addHandler(stream_handler) # add to root handler
+    logging.getLogger().addHandler(stream_handler)  # add to root handler
 
     # global variables
     options = gather_options(argv)
@@ -1064,8 +1134,9 @@ def main(argv):
 
         # adding log file
         logfile = "isrcsubmit.log"
-        file_handler = logging.FileHandler(logfile, mode='w',
-                            encoding="utf8", delay=True)
+        file_handler = logging.FileHandler(
+            logfile, mode="w", encoding="utf8", delay=True
+        )
         formatter = logging.Formatter("%(levelname)s:%(name)s: %(message)s")
         file_handler.setFormatter(formatter)
         file_handler.setLevel(logging.DEBUG)
@@ -1122,6 +1193,7 @@ def main(argv):
     if update_intention:
         # the ISRCs are deemed correct, so we can use them to check others
         check_global_duplicates(disc.release, mb_tracks, isrcs)
+
 
 if __name__ == "__main__":
     main(sys.argv)

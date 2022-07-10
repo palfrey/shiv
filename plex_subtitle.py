@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 from plexapi.myplex import MyPlexAccount
 import sys
-account = MyPlexAccount('palfrey@tevp.net', 'FZN9yaCWHHhJisPx2nVrCHmb')
+
+account = MyPlexAccount("palfrey@tevp.net", "FZN9yaCWHHhJisPx2nVrCHmb")
 
 print("Connecting...")
-plex = account.resource('eris').connect()
+plex = account.resource("eris").connect()
 
-#print([x.__dict__ for x in plex.library.sections()])
-shows = plex.library.sectionByID('6')
+# print([x.__dict__ for x in plex.library.sections()])
+shows = plex.library.sectionByID("6")
 # for library in plex.library.sections():
 #     if library.type == "show":
 #         if shows == None:
@@ -37,6 +38,7 @@ else:
     index = int(eval(input("# ")))
     show = search[index]
 
+
 def check_subtitles_full(subtitles, retry_flag=False):
     for subtitle in subtitles:
         if subtitle.languageCode != "eng":
@@ -49,6 +51,7 @@ def check_subtitles_full(subtitles, retry_flag=False):
         return subtitle
     return None
 
+
 def check_subtitles_forced(subtitles):
     selected_subtitles = None
     for subtitle in subtitles:
@@ -58,6 +61,7 @@ def check_subtitles_forced(subtitles):
             continue
         return subtitle
     return None
+
 
 def process_media(part, debug_name, mode):
     is_english = False
@@ -80,8 +84,15 @@ def process_media(part, debug_name, mode):
         else:
             sid = 0
         print("Set dubbed: %s" % debug_name)
-        plex.query('/library/parts/%s?audioStreamID=%s&allParts=1' % (part.id, english_audio.id),method=plex._session.put)
-        plex.query('/library/parts/%s?subtitleStreamID=%s&allParts=1' % (part.id, sid),method=plex._session.put)
+        plex.query(
+            "/library/parts/%s?audioStreamID=%s&allParts=1"
+            % (part.id, english_audio.id),
+            method=plex._session.put,
+        )
+        plex.query(
+            "/library/parts/%s?subtitleStreamID=%s&allParts=1" % (part.id, sid),
+            method=plex._session.put,
+        )
     elif mode == "subbed":
         if japanese_audio == None:
             print("Skipping: %s is English only." % debug_name)
@@ -91,9 +102,16 @@ def process_media(part, debug_name, mode):
             print("Skipping: %s has no subtitles." % debug_name)
             return
         sid = subtitles.id
-        print("Set subbed: %s (%s)" % (debug_name,subtitles.title))
-        plex.query('/library/parts/%s?audioStreamID=%s&allParts=1' % (part.id, japanese_audio.id),method=plex._session.put)
-        plex.query('/library/parts/%s?subtitleStreamID=%s&allParts=1' % (part.id, sid),method=plex._session.put)
+        print("Set subbed: %s (%s)" % (debug_name, subtitles.title))
+        plex.query(
+            "/library/parts/%s?audioStreamID=%s&allParts=1"
+            % (part.id, japanese_audio.id),
+            method=plex._session.put,
+        )
+        plex.query(
+            "/library/parts/%s?subtitleStreamID=%s&allParts=1" % (part.id, sid),
+            method=plex._session.put,
+        )
 
 
 for season in show.seasons():
