@@ -1,6 +1,6 @@
 import os
 from ..check_disks import decide_files
-import json
+import yaml
 import pytest
 import os.path
 
@@ -17,11 +17,11 @@ check_names = [
 def test_check_disks(fname):
     fname = str(fname.relative_to(Path(__file__).parent.parent))
     res = list(decide_files(fname))
-    outname = fname + ".json"
+    outname = fname + ".yaml"
     if os.path.exists(outname):
-        expected = json.load(open(outname))
+        expected = yaml.safe_load(open(outname))
     else:
         expected = None
-        json.dump(res, open(outname, "w"))
+        yaml.dump(res, open(outname, "w"))
 
     assert res == expected
