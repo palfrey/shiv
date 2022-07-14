@@ -38,14 +38,13 @@ def read_makemkv(root, fname):
         ]  # FIXME: Ignores root and I can't seem to make it not...
         print(" ".join(cmd))
         try:
-            data = subprocess.check_output(cmd)
+            data = subprocess.check_output(cmd, encoding="utf-8")
         except subprocess.CalledProcessError as e:
             print(e.output)
             raise
         if len(data) == 0:
             raise Exception
-        data = str(data, errors="ignore")
-        open(fname, "wb").write(data)
+        open(fname, "w").write(data)
     return data
 
 
