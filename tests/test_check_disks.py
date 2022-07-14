@@ -9,7 +9,7 @@ from pathlib import Path
 check_names = [
     x
     for x in Path(__file__).parent.joinpath("checks").glob("*")
-    if not x.name.endswith(".json")
+    if not x.name.endswith(".yaml")
 ]
 
 
