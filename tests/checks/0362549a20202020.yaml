@@ -1,0 +1,27 @@
+- fname: tests/checks/0362549a20202020-0.mkv
+  number: 0
+  track:
+    audio:
+      eng:
+      - 1
+      - 2
+      - 3
+    id: 0
+    length: 87
+    name: Children of Dune - Disc 1
+    subp: {}
+    track_path: Children of Dune - Disc 1_t00.mkv
+- fname: tests/checks/0362549a20202020-1.mkv
+  number: 1
+  track:
+    audio:
+      eng:
+      - 1
+      - 2
+      - 3
+    id: 1
+    length: 87
+    name: Children of Dune - Disc 1
+    subp: {}
+    track_path: Children of Dune - Disc 1_t01.mkv
+
