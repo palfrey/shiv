@@ -69,7 +69,7 @@ def check_file(fname, expected_length):
         raise
     diff = abs((length / 60.0) - expected_length)
     percent = 100.0 * (diff / expected_length)
-    if percent > 1.5:
+    if diff > 1 and percent > 1.5:
         raise Exception(
             "Missing %f minutes. Expected %f and got %f which is %f%%"
             % (diff, expected_length, length / 60.0, percent)
