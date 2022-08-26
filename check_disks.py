@@ -70,13 +70,16 @@ def parse_lsdvd(data):
                 if element.firstChild != None:
                     if "subp" not in tracks[id]:
                         tracks[id]["subp"] = {}
-                    if element.firstChild.data == "xx":
+                    lang = element.firstChild.data
+                    if lang == "xx":
                         # open(fname, "wb").write("")
                         continue
                         raise Exception(id, tracks[id], child.toxml())
-                    tracks[id]["subp"][
-                        element.firstChild.data
-                    ] = child.getElementsByTagName("ix")[0].firstChild.data
+                    if lang not in tracks[id]["subp"]:
+                        tracks[id]["subp"][lang] = []
+                    tracks[id]["subp"][lang].append(
+                        child.getElementsByTagName("ix")[0].firstChild.data
+                    )
             elif child.nodeName == "audio":
                 assert id in tracks
                 if "audio" not in tracks[id]:
@@ -86,8 +89,9 @@ def parse_lsdvd(data):
                 if element.firstChild != None:
                     langcode = element.firstChild.data
                     if langcode not in tracks[id]["audio"]:
-                        audioId = child.getElementsByTagName("ix")[0].firstChild.data
-                        tracks[id]["audio"][langcode] = audioId
+                        tracks[id]["audio"][langcode] = []
+                    audioId = child.getElementsByTagName("ix")[0].firstChild.data
+                    tracks[id]["audio"][langcode].append(audioId)
             elif child.nodeName == "chapter":
                 if "chapters" not in tracks[id]:
                     tracks[id]["chapters"] = {}

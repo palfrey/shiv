@@ -111,7 +111,10 @@ def dvd_encode(root, data):
     info = data["track"]
     if "subp" in info and "audio" in info and "ja" in info["audio"]:
         print("anime")
-        cmd += " -a %s -s %s" % (info["audio"]["ja"], info["subp"]["en"])
+        cmd += " --audio %s --subtitle %s" % (
+            ",".join(info["audio"]["ja"]),
+            ",".join(info["subp"]["en"]),
+        )
     elif "subp" in info and "en" in info["subp"]:
         if "audio" in info and "en" in info["audio"]:
             print("subtitles (en only)")
