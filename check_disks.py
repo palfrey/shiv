@@ -21,7 +21,7 @@ def read_lsdvd(root, fname):
             raise Exception
         data = str(data, errors="ignore")
         data = data.replace("&", "&amp;")
-        open(fname, "wb").write(data)
+        open(fname, "w").write(data)
     return data
 
 
