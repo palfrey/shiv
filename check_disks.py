@@ -227,7 +227,7 @@ def decide_files(fname):
     )
     print("Total lengths", totalEpisodeLength, movieLength)
 
-    if episodes > movies and totalEpisodeLength > 110:
+    if episodes > movies and totalEpisodeLength > 90:
         print(
             "TV series",
             len(episodeValues),
