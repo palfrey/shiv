@@ -225,9 +225,14 @@ def decide_files(fname):
     movieLength = (
         movieValues[list(movieValues.keys())[0]]["length"] if movies > 0 else 0
     )
-    print("Total lengths", totalEpisodeLength, movieLength)
+    print(
+        "Total lengths",
+        totalEpisodeLength,
+        movieLength,
+        (movieLength - totalEpisodeLength),
+    )
 
-    if episodes > movies and totalEpisodeLength > 90:
+    if movies == 0 or (episodes > movies and (movieLength - totalEpisodeLength) < 1):
         print(
             "TV series",
             len(episodeValues),
