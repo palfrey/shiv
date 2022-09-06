@@ -222,9 +222,7 @@ def decide_files(fname):
         raise Exception
 
     totalEpisodeLength = sum([x["length"] for x in list(episodeValues.values())])
-    movieLength = (
-        movieValues[list(movieValues.keys())[0]]["length"] if movies > 0 else 0
-    )
+    movieLength = sum([m["length"] for m in movieValues.values()])
     print(
         "Total lengths",
         totalEpisodeLength,
@@ -232,7 +230,9 @@ def decide_files(fname):
         (movieLength - totalEpisodeLength),
     )
 
-    if movies == 0 or (episodes > movies and (movieLength - totalEpisodeLength) < 1):
+    if movies == 0 or (
+        movies == 1 and episodes > movies and (movieLength - totalEpisodeLength) < 1
+    ):
         print(
             "TV series",
             len(episodeValues),
