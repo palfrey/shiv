@@ -211,7 +211,7 @@ def decide_files(fname):
     episodeValues = dict((k, v) for (k, v) in tracks.items() if v["length"] < 87)
     episodes = len(episodeValues)
     movieValues = dict(
-        (k, v) for (k, v) in tracks.items() if v["length"] > 65 and v["length"] < 200
+        (k, v) for (k, v) in tracks.items() if v["length"] > 85 and v["length"] < 200
     )
     movies = len(movieValues)
     print("e,m", episodes, movies, [(k, v["length"]) for (k, v) in tracks.items()])
@@ -231,7 +231,10 @@ def decide_files(fname):
     )
 
     if movies == 0 or (
-        movies == 1 and episodes > movies and (movieLength - totalEpisodeLength) < 1
+        movies == 1
+        and episodes > movies
+        and (movieLength - totalEpisodeLength) < 1
+        and (episodes < 10 or movieLength > 120)
     ):
         print(
             "TV series",
