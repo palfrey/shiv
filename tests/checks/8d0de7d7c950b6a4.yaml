@@ -1,3 +1,12 @@
+- fname: tests/checks/8d0de7d7c950b6a4-0.mkv
+  number: 0
+  track:
+    audio: {}
+    id: 0
+    length: 5
+    name: Gravity
+    subp: {}
+    track_path: Gravity_t00.mkv
 - fname: tests/checks/8d0de7d7c950b6a4-1.mkv
   number: 1
   track:
@@ -802,6 +811,63 @@
       - 27
       - 28
     track_path: Gravity_t18.mkv
+- fname: tests/checks/8d0de7d7c950b6a4-19.mkv
+  number: 19
+  track:
+    audio:
+      eng:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+    id: 19
+    length: 5
+    name: Gravity
+    subp:
+      dan:
+      - 19
+      - 20
+      deu:
+      - 11
+      - 12
+      - 31
+      - 32
+      eng:
+      - 7
+      - 8
+      fin:
+      - 21
+      - 22
+      fra:
+      - 9
+      - 10
+      - 29
+      - 30
+      isl:
+      - 23
+      - 24
+      ita:
+      - 13
+      - 14
+      - 33
+      - 34
+      nld:
+      - 17
+      - 18
+      nor:
+      - 25
+      - 26
+      spa:
+      - 15
+      - 16
+      - 35
+      - 36
+      swe:
+      - 27
+      - 28
+    track_path: Gravity_t19.mkv
 - fname: tests/checks/8d0de7d7c950b6a4-20.mkv
   number: 20
   track:

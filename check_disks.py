@@ -7,6 +7,7 @@ import os
 import json
 import stat
 import csv
+import statistics
 
 
 def read_lsdvd(root, fname):
@@ -206,14 +207,31 @@ def decide_files(fname):
         print("Protected with RipGuard, need a .trackmap")
         raise Exception
 
-    tracks = dict((k, v) for (k, v) in tracks.items() if v["length"] > 5)
-
-    episodeValues = dict((k, v) for (k, v) in tracks.items() if v["length"] < 87)
-    episodes = len(episodeValues)
     movieValues = dict(
         (k, v) for (k, v) in tracks.items() if v["length"] > 85 and v["length"] < 200
     )
     movies = len(movieValues)
+
+    min_episode_length = 5
+    if movies == 0:
+        min_episode_length = 3
+    elif movies == 1 and list(movieValues.values())[0]["length"] > 170:
+        # FIXME: Kinda a Ivor hack
+        min_episode_length = 2
+
+    episodeValues = dict((k, v) for (k, v) in tracks.items() if v["length"] < 90 and v["length"] >= min_episode_length)
+    median_episode_length = statistics.median([v["length"] for v in episodeValues.values()]) if len(episodeValues) > 0 else 0
+
+    removedepisodeValues = dict((k, v) for (k, v) in episodeValues.items() if v["length"] < (median_episode_length*.1))
+    
+    episodeValues = dict((k, v) for (k, v) in episodeValues.items() if v["length"] > (median_episode_length*.1))
+    
+    print (median_episode_length)
+    print (removedepisodeValues)
+    print (episodeValues)
+    #raise Exception((median_episode_length, removedepisodeValues, episodeValues))
+
+    episodes = len(episodeValues)
     print("e,m", episodes, movies, [(k, v["length"]) for (k, v) in tracks.items()])
 
     if episodes > 30:  # too many!
@@ -233,8 +251,8 @@ def decide_files(fname):
     if movies == 0 or (
         movies == 1
         and episodes > movies
-        and (movieLength - totalEpisodeLength) < 1
-        and (episodes < 10 or movieLength > 120)
+        and ((movieLength - totalEpisodeLength) < 1 or episodes > 20)
+        and (movieLength > 160 or episodes > 20 or median_episode_length > 20)
     ):
         print(
             "TV series",
@@ -263,7 +281,7 @@ def decide_files(fname):
         print(movieValues, episodeValues)
 
         for k in order:
-            if k not in tracks:
+            if k not in episodeValues and k not in movieValues:
                 continue
             fname = "%s-%d.mkv" % (base, k)
             yield {"number": k, "fname": fname, "track": tracks[k]}
