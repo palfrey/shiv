@@ -1,298 +1,299 @@
-- fname: tests/checks/c3259bb6_d2a3e1c2-1.mkv
-  number: 1
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.718666666666667
-    id: 1
-    length: 5.718666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-2.mkv
-  number: 2
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.718666666666667
-    id: 2
-    length: 5.718666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-3.mkv
-  number: 3
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.718666666666667
-    id: 3
-    length: 5.718666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-4.mkv
-  number: 4
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.718666666666667
-    id: 4
-    length: 5.718666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-5.mkv
-  number: 5
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.718666666666667
-    id: 5
-    length: 5.718666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-6.mkv
-  number: 6
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.718666666666667
-    id: 6
-    length: 5.718666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-7.mkv
-  number: 7
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.718666666666667
-    id: 7
-    length: 5.718666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-8.mkv
-  number: 8
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.718666666666667
-    id: 8
-    length: 5.718666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-9.mkv
-  number: 9
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.718666666666667
-    id: 9
-    length: 5.718666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-10.mkv
-  number: 10
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.718666666666667
-    id: 10
-    length: 5.718666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-11.mkv
-  number: 11
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.718666666666667
-    id: 11
-    length: 5.718666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-12.mkv
-  number: 12
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.718666666666667
-    id: 12
-    length: 5.718666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-13.mkv
-  number: 13
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.718666666666667
-    id: 13
-    length: 5.718666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-14.mkv
-  number: 14
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.7
-    id: 14
-    length: 5.7
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-15.mkv
-  number: 15
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.691999999999999
-    id: 15
-    length: 5.691999999999999
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-16.mkv
-  number: 16
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.660666666666667
-    id: 16
-    length: 5.660666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-17.mkv
-  number: 17
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.693333333333333
-    id: 17
-    length: 5.693333333333333
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-18.mkv
-  number: 18
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.690666666666667
-    id: 18
-    length: 5.690666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-19.mkv
-  number: 19
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.689333333333334
-    id: 19
-    length: 5.689333333333334
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-20.mkv
-  number: 20
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.691999999999999
-    id: 20
-    length: 5.691999999999999
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-21.mkv
-  number: 21
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.693333333333333
-    id: 21
-    length: 5.693333333333333
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-22.mkv
-  number: 22
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.691999999999999
-    id: 22
-    length: 5.691999999999999
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-23.mkv
-  number: 23
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.692666666666667
-    id: 23
-    length: 5.692666666666667
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-24.mkv
-  number: 24
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.693333333333333
-    id: 24
-    length: 5.693333333333333
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-25.mkv
-  number: 25
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.693333333333333
-    id: 25
-    length: 5.693333333333333
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-26.mkv
-  number: 26
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 5.665333333333334
-    id: 26
-    length: 5.665333333333334
-    subp:
-      en: ['1']
-- fname: tests/checks/c3259bb6_d2a3e1c2-33.mkv
-  number: 33
-  track:
-    audio:
-      en: ['1']
-    chapters:
-      1: 0.0
-      2: 11.437333333333333
-    id: 33
-    length: 11.437333333333333
-    subp:
-      en: ['1']
+---
+    - fname: tests/checks/c3259bb6_d2a3e1c2-1.mkv
+      number: 1
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.718666666666667
+          id: 1
+          length: 5.718666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-2.mkv
+      number: 2
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.718666666666667
+          id: 2
+          length: 5.718666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-3.mkv
+      number: 3
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.718666666666667
+          id: 3
+          length: 5.718666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-4.mkv
+      number: 4
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.718666666666667
+          id: 4
+          length: 5.718666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-5.mkv
+      number: 5
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.718666666666667
+          id: 5
+          length: 5.718666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-6.mkv
+      number: 6
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.718666666666667
+          id: 6
+          length: 5.718666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-7.mkv
+      number: 7
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.718666666666667
+          id: 7
+          length: 5.718666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-8.mkv
+      number: 8
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.718666666666667
+          id: 8
+          length: 5.718666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-9.mkv
+      number: 9
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.718666666666667
+          id: 9
+          length: 5.718666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-10.mkv
+      number: 10
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.718666666666667
+          id: 10
+          length: 5.718666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-11.mkv
+      number: 11
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.718666666666667
+          id: 11
+          length: 5.718666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-12.mkv
+      number: 12
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.718666666666667
+          id: 12
+          length: 5.718666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-13.mkv
+      number: 13
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.718666666666667
+          id: 13
+          length: 5.718666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-14.mkv
+      number: 14
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.7
+          id: 14
+          length: 5.7
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-15.mkv
+      number: 15
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.691999999999999
+          id: 15
+          length: 5.691999999999999
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-16.mkv
+      number: 16
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.660666666666667
+          id: 16
+          length: 5.660666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-17.mkv
+      number: 17
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.693333333333333
+          id: 17
+          length: 5.693333333333333
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-18.mkv
+      number: 18
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.690666666666667
+          id: 18
+          length: 5.690666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-19.mkv
+      number: 19
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.689333333333334
+          id: 19
+          length: 5.689333333333334
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-20.mkv
+      number: 20
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.691999999999999
+          id: 20
+          length: 5.691999999999999
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-21.mkv
+      number: 21
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.693333333333333
+          id: 21
+          length: 5.693333333333333
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-22.mkv
+      number: 22
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.691999999999999
+          id: 22
+          length: 5.691999999999999
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-23.mkv
+      number: 23
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.692666666666667
+          id: 23
+          length: 5.692666666666667
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-24.mkv
+      number: 24
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.693333333333333
+          id: 24
+          length: 5.693333333333333
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-25.mkv
+      number: 25
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.693333333333333
+          id: 25
+          length: 5.693333333333333
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-26.mkv
+      number: 26
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 5.665333333333334
+          id: 26
+          length: 5.665333333333334
+          subp:
+              en: ['1']
+    - fname: tests/checks/c3259bb6_d2a3e1c2-33.mkv
+      number: 33
+      track:
+          audio:
+              en: ['1']
+          chapters:
+              1: 0.0
+              2: 11.437333333333333
+          id: 33
+          length: 11.437333333333333
+          subp:
+              en: ['1']

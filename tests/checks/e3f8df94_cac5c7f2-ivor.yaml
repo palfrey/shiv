@@ -1,264 +1,265 @@
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-3.mkv
-  number: 3
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 4.932666666666666
-      2: 0.008
-    id: 3
-    length: 4.940666666666667
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-4.mkv
-  number: 4
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 4.922666666666667
-      2: 0.008
-    id: 4
-    length: 4.930666666666666
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-5.mkv
-  number: 5
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 9.066
-      2: 0.008
-    id: 5
-    length: 9.074000000000002
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-6.mkv
-  number: 6
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 5.037999999999999
-      2: 0.008
-    id: 6
-    length: 5.046
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-7.mkv
-  number: 7
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 18.454666666666665
-      2: 0.008
-    id: 7
-    length: 18.462666666666667
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-8.mkv
-  number: 8
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 4.8133333333333335
-      2: 0.008
-    id: 8
-    length: 4.821333333333333
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-9.mkv
-  number: 9
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 4.912000000000001
-      2: 0.008
-    id: 9
-    length: 4.92
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-10.mkv
-  number: 10
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 8.942
-      2: 0.008
-    id: 10
-    length: 8.95
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-11.mkv
-  number: 11
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 4.779333333333333
-      2: 0.008
-    id: 11
-    length: 4.787333333333334
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-12.mkv
-  number: 12
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 4.834666666666666
-      2: 0.008
-    id: 12
-    length: 4.842666666666667
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-13.mkv
-  number: 13
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 9.094666666666665
-      2: 0.008
-    id: 13
-    length: 9.102666666666666
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-14.mkv
-  number: 14
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 9.172
-      2: 0.008
-    id: 14
-    length: 9.18
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-15.mkv
-  number: 15
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 4.813999999999999
-      2: 0.008
-    id: 15
-    length: 4.822
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-16.mkv
-  number: 16
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 9.250666666666666
-      2: 0.008
-    id: 16
-    length: 9.258666666666667
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-17.mkv
-  number: 17
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 22.728666666666665
-      2: 0.008
-    id: 17
-    length: 22.736666666666668
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-18.mkv
-  number: 18
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 4.824666666666667
-      2: 0.008
-    id: 18
-    length: 4.832666666666666
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-19.mkv
-  number: 19
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 4.820666666666667
-      2: 0.008
-    id: 19
-    length: 4.828666666666667
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-20.mkv
-  number: 20
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 9.164666666666667
-      2: 0.008
-    id: 20
-    length: 9.172666666666666
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-21.mkv
-  number: 21
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 4.762666666666666
-      2: 0.008
-    id: 21
-    length: 4.770666666666667
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-22.mkv
-  number: 22
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 9.232
-      2: 0.008
-    id: 22
-    length: 9.24
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-23.mkv
-  number: 23
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 4.826666666666667
-      2: 0.008
-    id: 23
-    length: 4.834666666666666
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-24.mkv
-  number: 24
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 9.073333333333332
-      2: 0.008
-    id: 24
-    length: 9.081333333333333
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-25.mkv
-  number: 25
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 4.97
-      2: 0.008
-    id: 25
-    length: 4.978
-- fname: tests/checks/e3f8df94_cac5c7f2-ivor-26.mkv
-  number: 26
-  track:
-    audio:
-      en:
-      - '1'
-    chapters:
-      1: 9.288666666666668
-      2: 0.008
-    id: 26
-    length: 9.296666666666665
+---
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-3.mkv
+      number: 3
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 4.932666666666666
+              2: 0.008
+          id: 3
+          length: 4.940666666666667
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-4.mkv
+      number: 4
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 4.922666666666667
+              2: 0.008
+          id: 4
+          length: 4.930666666666666
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-5.mkv
+      number: 5
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 9.066
+              2: 0.008
+          id: 5
+          length: 9.074000000000002
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-6.mkv
+      number: 6
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 5.037999999999999
+              2: 0.008
+          id: 6
+          length: 5.046
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-7.mkv
+      number: 7
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 18.454666666666665
+              2: 0.008
+          id: 7
+          length: 18.462666666666667
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-8.mkv
+      number: 8
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 4.8133333333333335
+              2: 0.008
+          id: 8
+          length: 4.821333333333333
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-9.mkv
+      number: 9
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 4.912000000000001
+              2: 0.008
+          id: 9
+          length: 4.92
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-10.mkv
+      number: 10
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 8.942
+              2: 0.008
+          id: 10
+          length: 8.95
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-11.mkv
+      number: 11
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 4.779333333333333
+              2: 0.008
+          id: 11
+          length: 4.787333333333334
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-12.mkv
+      number: 12
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 4.834666666666666
+              2: 0.008
+          id: 12
+          length: 4.842666666666667
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-13.mkv
+      number: 13
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 9.094666666666665
+              2: 0.008
+          id: 13
+          length: 9.102666666666666
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-14.mkv
+      number: 14
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 9.172
+              2: 0.008
+          id: 14
+          length: 9.18
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-15.mkv
+      number: 15
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 4.813999999999999
+              2: 0.008
+          id: 15
+          length: 4.822
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-16.mkv
+      number: 16
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 9.250666666666666
+              2: 0.008
+          id: 16
+          length: 9.258666666666667
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-17.mkv
+      number: 17
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 22.728666666666665
+              2: 0.008
+          id: 17
+          length: 22.736666666666668
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-18.mkv
+      number: 18
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 4.824666666666667
+              2: 0.008
+          id: 18
+          length: 4.832666666666666
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-19.mkv
+      number: 19
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 4.820666666666667
+              2: 0.008
+          id: 19
+          length: 4.828666666666667
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-20.mkv
+      number: 20
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 9.164666666666667
+              2: 0.008
+          id: 20
+          length: 9.172666666666666
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-21.mkv
+      number: 21
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 4.762666666666666
+              2: 0.008
+          id: 21
+          length: 4.770666666666667
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-22.mkv
+      number: 22
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 9.232
+              2: 0.008
+          id: 22
+          length: 9.24
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-23.mkv
+      number: 23
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 4.826666666666667
+              2: 0.008
+          id: 23
+          length: 4.834666666666666
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-24.mkv
+      number: 24
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 9.073333333333332
+              2: 0.008
+          id: 24
+          length: 9.081333333333333
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-25.mkv
+      number: 25
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 4.97
+              2: 0.008
+          id: 25
+          length: 4.978
+    - fname: tests/checks/e3f8df94_cac5c7f2-ivor-26.mkv
+      number: 26
+      track:
+          audio:
+              en:
+                  - '1'
+          chapters:
+              1: 9.288666666666668
+              2: 0.008
+          id: 26
+          length: 9.296666666666665

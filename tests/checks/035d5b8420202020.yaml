@@ -1,17 +1,18 @@
-- fname: The Princess Bride.mkv
-  number: 8
-  track:
-    audio:
-      eng:
-      - 1
-      - 2
-      - 3
-      - 4
-    id: 8
-    length: 98
-    name: The Princess Bride
-    subp:
-      eng:
-      - 5
-      - 6
-    track_path: The Princess Bride_t08.mkv
+---
+    - fname: The Princess Bride.mkv
+      number: 8
+      track:
+          audio:
+              eng:
+                  - 1
+                  - 2
+                  - 3
+                  - 4
+          id: 8
+          length: 98
+          name: The Princess Bride
+          subp:
+              eng:
+                  - 5
+                  - 6
+          track_path: The Princess Bride_t08.mkv

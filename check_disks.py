@@ -1,13 +1,13 @@
-from os.path import exists, join
-import subprocess
-from xml.dom.minidom import parseString
-from sys import argv
-from json import dumps, loads
-import os
-import json
-import stat
 import csv
+import json
+import os
+import stat
 import statistics
+import subprocess
+from json import dumps, loads
+from os.path import exists, join
+from sys import argv
+from xml.dom.minidom import parseString
 
 
 def read_lsdvd(root, fname):
@@ -59,16 +59,16 @@ def parse_lsdvd(data):
         # print [x.nodeName for x in track.childNodes]
         for child in track.childNodes:
             if child.nodeName == "ix":
-                assert id == None, id
+                assert id is None, id
                 id = int(child.firstChild.data)
             elif child.nodeName == "length":
-                assert id != None
+                assert id is not None
                 length = float(child.firstChild.data)
                 tracks[id] = {"length": length / 60.0, "id": id}
             elif child.nodeName == "subp":
                 assert id in tracks
                 element = child.getElementsByTagName("langcode")[0]
-                if element.firstChild != None:
+                if element.firstChild is not None:
                     if "subp" not in tracks[id]:
                         tracks[id]["subp"] = {}
                     lang = element.firstChild.data
@@ -87,7 +87,7 @@ def parse_lsdvd(data):
                     tracks[id]["audio"] = {}
                 element = langcode = child.getElementsByTagName("langcode")[0]
                 # print element.toxml()
-                if element.firstChild != None:
+                if element.firstChild is not None:
                     langcode = element.firstChild.data
                     if langcode not in tracks[id]["audio"]:
                         tracks[id]["audio"][langcode] = []
@@ -219,17 +219,33 @@ def decide_files(fname):
         # FIXME: Kinda a Ivor hack
         min_episode_length = 2
 
-    episodeValues = dict((k, v) for (k, v) in tracks.items() if v["length"] < 90 and v["length"] >= min_episode_length)
-    median_episode_length = statistics.median([v["length"] for v in episodeValues.values()]) if len(episodeValues) > 0 else 0
+    episodeValues = dict(
+        (k, v)
+        for (k, v) in tracks.items()
+        if v["length"] < 90 and v["length"] >= min_episode_length
+    )
+    median_episode_length = (
+        statistics.median([v["length"] for v in episodeValues.values()])
+        if len(episodeValues) > 0
+        else 0
+    )
 
-    removedepisodeValues = dict((k, v) for (k, v) in episodeValues.items() if v["length"] < (median_episode_length*.1))
-    
-    episodeValues = dict((k, v) for (k, v) in episodeValues.items() if v["length"] > (median_episode_length*.1))
-    
-    print (median_episode_length)
-    print (removedepisodeValues)
-    print (episodeValues)
-    #raise Exception((median_episode_length, removedepisodeValues, episodeValues))
+    removedepisodeValues = dict(
+        (k, v)
+        for (k, v) in episodeValues.items()
+        if v["length"] < (median_episode_length * 0.1)
+    )
+
+    episodeValues = dict(
+        (k, v)
+        for (k, v) in episodeValues.items()
+        if v["length"] > (median_episode_length * 0.1)
+    )
+
+    print(median_episode_length)
+    print(removedepisodeValues)
+    print(episodeValues)
+    # raise Exception((median_episode_length, removedepisodeValues, episodeValues))
 
     episodes = len(episodeValues)
     print("e,m", episodes, movies, [(k, v["length"]) for (k, v) in tracks.items()])

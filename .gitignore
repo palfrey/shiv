@@ -1,10 +1,10 @@
 *.mp4
 handbrake.log
 dump
-.*
 tracks/
 makemkv/
 mkv_temp/
 *.pyc
 output/*
 abcde.*
+.vscode/

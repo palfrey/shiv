@@ -1,11 +1,12 @@
 import dbus
-from dbus.mainloop.glib import DBusGMainLoop
 import gi
+from dbus.mainloop.glib import DBusGMainLoop
 
 gi.require_version("GLib", "2.0")
-from gi.repository import GLib
-from os.path import basename
 from os import system
+from os.path import basename
+
+from gi.repository import GLib
 
 loop = GLib.MainLoop()
 DBusGMainLoop(set_as_default=True)

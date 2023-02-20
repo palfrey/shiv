@@ -30,17 +30,17 @@ BROWSERS = ["xdg-open", "x-www-browser", "firefox", "chromium", "chrome", "opera
 # The webbrowser module is used when nothing is found in this list.
 # This especially happens on Windows and Mac OS X (browser mostly not in PATH)
 
+import codecs
+import getpass
+import logging
 import os
 import re
 import sys
-import codecs
-import logging
-import getpass
 import tempfile
 import webbrowser
 from datetime import datetime
 from optparse import OptionParser
-from subprocess import Popen, PIPE, call
+from subprocess import PIPE, Popen, call
 
 try:
     import discid

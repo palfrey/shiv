@@ -1,10 +1,11 @@
 import os
-from ..check_disks import decide_files
-import yaml
-import pytest
 import os.path
-
 from pathlib import Path
+
+import pytest
+import yaml
+
+from ..check_disks import decide_files
 
 check_names = [
     x

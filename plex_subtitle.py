@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-from plexapi.myplex import MyPlexAccount
 import sys
+
+from plexapi.myplex import MyPlexAccount
 
 account = MyPlexAccount("palfrey@tevp.net", "FZN9yaCWHHhJisPx2nVrCHmb")
 
@@ -11,7 +12,7 @@ plex = account.resource("eris").connect()
 shows = plex.library.sectionByID("6")
 # for library in plex.library.sections():
 #     if library.type == "show":
-#         if shows == None:
+#         if shows is None:
 #             shows = library
 #         else:
 #             print(library, shows)
@@ -53,25 +54,24 @@ def check_subtitles_full(subtitles, retry_flag=False):
 
 
 def check_subtitles_forced(subtitles):
-    selected_subtitles = None
     for subtitle in subtitles:
         if subtitle.languageCode != "eng":
             continue
-        if not "Forced" in subtitle._data.get("displayTitle"):
+        if "Forced" not in subtitle._data.get("displayTitle"):
             continue
         return subtitle
     return None
 
 
 def process_media(part, debug_name, mode):
-    is_english = False
+    # is_english = False
     english_audio = None
     japanese_audio = None
     for audio in part.audioStreams():
-        if audio.languageCode == "eng" and english_audio == None:
-            is_english = True
+        if audio.languageCode == "eng" and english_audio is None:
+            # is_english = True
             english_audio = audio
-        elif audio.languageCode == "jpn" and japanese_audio == None:
+        elif audio.languageCode == "jpn" and japanese_audio is None:
             japanese_audio = audio
     # if not is_english:
     #     print("Skipping: %s is not in English." % debug_name)
@@ -79,7 +79,7 @@ def process_media(part, debug_name, mode):
 
     if mode == "dubbed":
         subtitles = check_subtitles_forced(part.subtitleStreams())
-        if subtitles != None:
+        if subtitles is not None:
             sid = subtitles.id
         else:
             sid = 0
@@ -94,11 +94,11 @@ def process_media(part, debug_name, mode):
             method=plex._session.put,
         )
     elif mode == "subbed":
-        if japanese_audio == None:
+        if japanese_audio is None:
             print("Skipping: %s is English only." % debug_name)
             return
         subtitles = check_subtitles_full(part.subtitleStreams())
-        if subtitles == None:
+        if subtitles is None:
             print("Skipping: %s has no subtitles." % debug_name)
             return
         sid = subtitles.id

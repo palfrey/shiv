@@ -1,13 +1,13 @@
-from os import walk, system, popen
-from os.path import exists, isdir, basename
 import os
-from xml.dom.minidom import parseString
-from stats import *
-from subprocess import Popen, PIPE, check_output
-from optparse import OptionParser
 import re
-from check_disks import read_lsdvd, decide_files, get_idname, is_bluray, read_makemkv
+from optparse import OptionParser
+from os import system, walk
+from os.path import exists
+from subprocess import PIPE, Popen, check_output
+
 import shellescape
+
+from check_disks import decide_files, get_idname, is_bluray, read_lsdvd, read_makemkv
 
 parser = OptionParser()
 parser.add_option("--chapter", dest="byChapter", default=False, action="store_true")
@@ -16,10 +16,10 @@ parser.add_option("--uuid", dest="uuid", default=None)
 
 
 def handbrakeList(root, fname):
-    titlePattern = re.compile("\+ title (\d+):")
-    durationPattern = re.compile("\+ duration: (\d+):(\d+):(\d+)")
+    titlePattern = re.compile(r"\+ title (\d+):")
+    durationPattern = re.compile(r"\+ duration: (\d+):(\d+):(\d+)")
     chapterPattern = re.compile(
-        "\+ (\d+): cells \d+->\d+, \d+ blocks, duration (\d+):(\d+):(\d+)"
+        r"\+ (\d+): cells \d+->\d+, \d+ blocks, duration (\d+):(\d+):(\d+)"
     )
 
     tracks = {}
@@ -33,7 +33,7 @@ def handbrakeList(root, fname):
         data = str(data, errors="ignore")
         open("dump", "wb").write(data)
         title = titlePattern.search(data)
-        if title == None:
+        if title is None:
             raise Exception
         if int(title.groups()[0]) != value:
             raise Exception(title.groups(), value)
@@ -57,9 +57,9 @@ def check_file(fname, expected_length):
     print(cmd)
     mplayer = check_output(cmd, encoding="utf-8")
     values = {}
-    for l in mplayer.split("\n"):
-        if l.find("=") != -1 and l.find(" ") == -1 and l.find("==") == -1:
-            key, value = l.split("=", 1)
+    for line in mplayer.split("\n"):
+        if line.find("=") != -1 and line.find(" ") == -1 and line.find("==") == -1:
+            key, value = line.split("=", 1)
             values[key] = value.strip()
     try:
         length = float(values["ID_LENGTH"])
@@ -77,7 +77,7 @@ def check_file(fname, expected_length):
 
 
 def reencode(root):
-    if opts.uuid == None:
+    if opts.uuid is None:
         idname = get_idname(root)
     else:
         idname = opts.uuid

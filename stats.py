@@ -19,8 +19,6 @@ def median(values):
 
 """
 Calculate mean and standard deviation of data x[]:
-    mean = {\sum_i x_i \over n}
-    std = sqrt(\sum_i (x_i - mean)^2 \over n-1)
 """
 
 

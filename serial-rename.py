@@ -1,9 +1,11 @@
-from sys import argv
-from os import listdir, rename
-from os.path import splitext, join, expanduser, getmtime
-from urlgrab import Cache
-import fetch
 import re
+from os import listdir, rename
+from os.path import expanduser, getmtime, join, splitext
+from sys import argv
+
+import fetch
+
+from urlgrab import Cache
 
 cdir = join(expanduser("~"), ".cache/renamer")
 cache = Cache(debug=False, cache=cdir)
@@ -29,7 +31,7 @@ def atoi(text):
 
 def natural_keys(text):
     main, ext = splitext(text)
-    nums = [x for x in re.split("(\d+)", main) if x != ""]
+    nums = [x for x in re.split(r"(\d+)", main) if x != ""]
     ret = nums[:-1] + [atoi(nums[-1])]
     # print text, nums, ret
     return ret
