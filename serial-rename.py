@@ -18,10 +18,13 @@ def epguides(name):
     inf = {"cache": cache, "core": (lambda i, eps: eps)}
     eps = {}
     for ep in fetch.tvdb().run(inf, name):
+        epnum = ep["epnum"]
         extra = ep["extra"]
         if extra is not None:
-            raise Exception(extra)
-        eps[(ep["season"], ep["epnum"])] = ep["title"]
+            dvdnum = extra.get("dvdEpisodeNumber")
+            if dvdnum is not None:
+                epnum = dvdnum
+        eps[(ep["season"], epnum)] = ep["title"]
     return eps
 
 
