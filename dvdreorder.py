@@ -44,4 +44,4 @@ for fname in listdir(path):
     newname = fname.replace(original, f"{season}x{dvdnum:02d}")
     print(fname, newname)
     if len(argv) > 4 and argv[4] == "-r":
-        rename(fname, newname)
+        rename(join(path, fname), join(newname))
