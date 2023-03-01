@@ -17,8 +17,11 @@ season = int(season)
 def epguides(name):
     inf = {"cache": cache, "core": (lambda i, eps: eps)}
     eps = {}
-    for (season, epnum, date, title) in fetch.tvdb().run(inf, name):
-        eps[(int(season), int(epnum))] = title
+    for ep in fetch.tvdb().run(inf, name):
+        extra = ep["extra"]
+        if extra is not None:
+            raise Exception(extra)
+        eps[(ep["season"], ep["epnum"])] = ep["title"]
     return eps
 
 
