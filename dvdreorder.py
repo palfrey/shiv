@@ -1,5 +1,5 @@
 import re
-from os import listdir
+from os import listdir, rename
 from os.path import expanduser, join
 from sys import argv
 
@@ -18,13 +18,11 @@ def epguides(name):
     inf = {"cache": cache, "core": (lambda i, eps: eps)}
     eps = {}
     for ep in fetch.tvdb().run(inf, name):
-        epnum = ep["epnum"]
         extra = ep["extra"]
-        if extra is not None:
-            dvdnum = extra.get("dvdEpisodeNumber")
-        else:
-            dvdnum = None
-        eps[(ep["season"], epnum)] = dvdnum
+        if extra is None:
+            continue
+        dvdnum = extra.get("dvdEpisodeNumber")
+        eps[(ep["season"], dvdnum)] = ep["epnum"]
     return eps
 
 
@@ -36,7 +34,7 @@ for fname in listdir(path):
     if naming is None:
         print(f"Can't find in '{fname}'")
         continue
-    original = naming.span()
+    original = naming.group()
     season, episode = [int(x) for x in naming.groups()]
     key = (season, episode)
     if key not in eps:
@@ -45,3 +43,5 @@ for fname in listdir(path):
     dvdnum = eps[key]
     newname = fname.replace(original, f"{season}x{dvdnum:02d}")
     print(fname, newname)
+    if len(argv) > 4 and argv[4] == "-r":
+        rename(fname, newname)
