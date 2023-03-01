@@ -37,7 +37,8 @@ for fname in listdir(path):
         print(f"Can't find in '{fname}'")
         continue
     original = naming.span()
-    key = (season, episode) = [int(x) for x in naming.groups()]
+    season, episode = [int(x) for x in naming.groups()]
+    key = (season, episode)
     if key not in eps:
         print(f"No {key} in episodes")
         continue
