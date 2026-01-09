@@ -99,7 +99,7 @@ tomli==2.0.1
     #   pytest
 urllib3==2.6.3
     # via requests
-virtualenv==20.15.1
+virtualenv==20.26.6
     # via pre-commit
 watchdog==2.1.9
     # via pytest-watch
