@@ -20,5 +20,6 @@
   "vulnerabilityAlerts": {
     "enabled": true
   },
-  "osvVulnerabilityAlerts": true
+  "osvVulnerabilityAlerts": true,
+  "prConcurrentLimit": 2,
 }
