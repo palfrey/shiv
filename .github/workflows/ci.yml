@@ -14,7 +14,7 @@ jobs:
             - name: Install asdf & tools
               uses: asdf-vm/actions/install@v4
             - name: UV cache
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                   path: ~/.cache/uv
                   key: ${{ runner.os }}-uv-${{ hashFiles('**/requirements.txt') }}
