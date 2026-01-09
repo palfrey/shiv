@@ -22,7 +22,7 @@ jobs:
                       ${{ runner.os }}-uv-
             - name: Install debian dependencies
               run: |-
-                  apt install libgirepository1.0-dev
+                  sudo apt install libgirepository1.0-dev
             - name: Install python dependencies
               run: make sync
             - name: Test app
