@@ -26,11 +26,11 @@ dbus-python==1.2.18
     # via -r requirements.in
 discid==1.2.0
     # via -r requirements.in
-distlib==0.3.4
+distlib==0.4.0
     # via virtualenv
 docopt==0.6.2
     # via pytest-watch
-filelock==3.7.1
+filelock==3.19.1
     # via virtualenv
 identify==2.5.1
     # via pre-commit
@@ -58,7 +58,7 @@ pep517==0.12.0
     # via build
 pip-tools==6.8.0
     # via -r requirements.in
-platformdirs==2.5.2
+platformdirs==4.4.0
     # via virtualenv
 pluggy==1.0.0
     # via pytest
@@ -88,8 +88,6 @@ secretstorage==3.3.2
     # via keyring
 shellescape==3.8.1
     # via -r requirements.in
-six==1.16.0
-    # via virtualenv
 toml==0.10.2
     # via pre-commit
 tomli==2.0.1
@@ -97,9 +95,9 @@ tomli==2.0.1
     #   build
     #   pep517
     #   pytest
-urllib3==2.6.3
+urllib3==1.26.20
     # via requests
-virtualenv==20.15.1
+virtualenv==20.26.6
     # via pre-commit
 watchdog==2.1.9
     # via pytest-watch
