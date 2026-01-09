@@ -30,7 +30,7 @@ distlib==0.3.4
     # via virtualenv
 docopt==0.6.2
     # via pytest-watch
-filelock==3.7.1
+filelock==3.20.1
     # via virtualenv
 identify==2.5.1
     # via pre-commit
