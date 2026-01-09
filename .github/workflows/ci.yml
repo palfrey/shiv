@@ -23,7 +23,7 @@ jobs:
             - name: Install debian dependencies
               run: |-
                   sudo apt update
-                  sudo apt install libgirepository1.0-dev
+                  sudo apt install -y --no-install-recommends libgirepository1.0-dev libcairo2-dev
             - name: Install python dependencies
               run: make sync
             - name: Test app
