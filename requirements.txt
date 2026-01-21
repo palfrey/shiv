@@ -38,7 +38,7 @@ iniconfig==2.3.0
     # via pytest
 jaraco-classes==3.4.0
     # via keyring
-jaraco-context==6.0.2
+jaraco-context==6.1.0
     # via keyring
 jaraco-functools==4.4.0
     # via keyring
