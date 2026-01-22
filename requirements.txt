@@ -56,7 +56,7 @@ musicbrainzngs==0.7.1
     # via -r requirements.in
 nodeenv==1.10.0
     # via pre-commit
-packaging==25.0
+packaging==26.0
     # via
     #   build
     #   pytest
