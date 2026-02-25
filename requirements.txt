@@ -98,7 +98,7 @@ shellescape==3.8.1
     # via -r requirements.in
 urllib3==2.6.3
     # via requests
-virtualenv==20.36.1
+virtualenv==21.0.0
     # via pre-commit
 watchdog==6.0.0
     # via pytest-watch
