@@ -88,7 +88,7 @@ pytest-watch==4.2.0
     # via -r requirements.in
 pyyaml==6.0.3
     # via pre-commit
-requests==2.32.5
+requests==2.33.0
     # via -r requirements.in
 secretstorage==3.5.0
     # via keyring
