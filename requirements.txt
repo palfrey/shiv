@@ -16,7 +16,7 @@ click==8.3.1
     # via pip-tools
 colorama==0.4.6
     # via pytest-watch
-cryptography==46.0.6
+cryptography==46.0.7
     # via secretstorage
 dbus-python==1.4.0
     # via -r requirements.in
