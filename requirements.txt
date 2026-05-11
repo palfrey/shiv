@@ -96,7 +96,7 @@ setuptools==82.0.0
     # via pip-tools
 shellescape==3.8.1
     # via -r requirements.in
-urllib3==2.6.3
+urllib3==2.7.0
     # via requests
 virtualenv==21.0.0
     # via pre-commit
