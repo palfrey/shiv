@@ -100,7 +100,7 @@ urllib3==2.8.0
     # via requests
 virtualenv==21.14.13
     # via pre-commit
-watchdog==6.0.0
+watchdog==7.0.0
     # via pytest-watch
 wheel==0.46.2
     # via pip-tools
